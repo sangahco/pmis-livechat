@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html ng-app="app">
+<head>
+<title>PMIS Live Chat</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font: 13px Helvetica, Arial; }
+</style>
+</head>
+
+<body ng-controller="AppController as ctrl">
+    <div ng-view></div>
+
+<script src="libs/jquery/jquery.min.js"></script>
+<script src="libs/bootstrap/bootstrap.min.js"></script>
+<script src="libs/socket.io-client/socket.io.slim.js"></script>
+<script src="libs/angular/angular.min.js"></script>
+<script src="libs/angular-route/angular-route.min.js"></script>
+<script src="http-request.module.js"></script>
+<script src="chat.module.js"></script>
+<script src="app.module.js"></script>
+<script>
+(function(){
+    "use strict";
+
+    $(function(){
+       
+    });
+
+})();
+</script>
+
+</body>
+</html>
