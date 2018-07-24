@@ -1,0 +1,5 @@
+apps:
+  - script   : 'livechat.js'
+    name     : 'Livechat'
+    exec_mode: 'cluster'
+    instances: 1

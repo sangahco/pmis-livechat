@@ -1,7 +1,7 @@
 (function(){
     "use strict";
 
-    var app = angular.module("app", ['ngRoute', 'chat']);
+    var app = angular.module("app", ['ngRoute', 'chat', 'chatView', 'notification']);
 
     app.config(['$locationProvider', '$routeProvider',
         function config($locationProvider, $routeProvider) {
