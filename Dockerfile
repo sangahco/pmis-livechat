@@ -10,7 +10,7 @@ WORKDIR /usr/share/livechat/
 
 RUN set -ex && \
     apk add --no-cache --virtual \
-      nodejs && \
+      nodejs git && \
     npm install && \
     npm install -g pm2 && \
     npm installer -g bower-installer
