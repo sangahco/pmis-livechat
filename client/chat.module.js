@@ -4,20 +4,26 @@
     const app = angular.module("chat", ['httpRequest', 'notification']);
     const path = location.pathname.substring(0, location.pathname.lastIndexOf('/'));
 
-    app.service("chatService", ['$log', 'HttpRequestService', 'notificationService', 
-    function($log, httpRequest, notificationService){
-        var chat;
+    app.service("chatService", ['$log', '$routeParams', 'HttpRequestService', 'notificationService', 
+    function($log, $routeParams, httpRequest, notificationService){
+        var socket;
 
         return {
 
             joinChat: function(clientName, room){
-                chat && chat.close();
-                chat = io.connect('/chat', {path: path + '/ws'});
+                socket && socket.close();
+                socket = io.connect('/chat', {
+                    path: path + '/ws',
+                    query: {
+                        token: $routeParams.token
+                    }
+                });
 
-                chat.on('connect', function(msg){
-                    chat.emit('join room', {
+                socket.on('validated', function(msg){
+                    socket.emit('join room', {
                         room: room,
-                        user: clientName
+                        user: clientName,
+                        token: $routeParams.token
                     });
                 });
 
@@ -25,11 +31,11 @@
                 //     notificationService.notifyMe(data.user + " has joined the chat");
                 // });
 
-                return chat;
+                return socket;
             },
 
             sendMessage: function(message){
-                chat.emit('chat message', {
+                socket.emit('chat message', {
                     msg: message
                 });
             },
