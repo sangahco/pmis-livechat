@@ -13,7 +13,8 @@ RUN set -ex && \
       nodejs git && \
     npm install -g pm2 && \
     npm install -g bower-installer && \
-    npm install
+    npm install && \
+    rm -rf bower_components
 
 EXPOSE 3000 9615
 
