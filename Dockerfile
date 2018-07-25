@@ -11,9 +11,9 @@ WORKDIR /usr/share/livechat/
 RUN set -ex && \
     apk add --no-cache --virtual \
       nodejs git && \
-    npm install && \
     npm install -g pm2 && \
-    npm installer -g bower-installer
+    npm install -g bower-installer && \
+    npm install
 
 EXPOSE 3000 9615
 
