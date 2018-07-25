@@ -7,7 +7,11 @@ const config = {
         name: process.env.SERVER_NAME || 'LiveChat'
     },
     client: {
-        authentication: process.env.CLIENT_AUTHENTICATION || false
+        authentication: {
+            enabled: process.env.CLIENT_AUTH_ENABLED || false,
+            host: process.env.CLIENT_AUTH_HOST || '127.0.0.1',
+            path: process.env.CLIENT_AUTH_PATH || '/'
+        }
     }
 };
 

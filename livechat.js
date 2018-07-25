@@ -23,7 +23,7 @@ let logger = winston.createLogger({
 });
 
 var validateConnection = (token, callback) => callback();
-if (config.client.authentication) {
+if (config.client.authentication.enabled) {
     validateConnection = client.validateClient;
 }
 
@@ -76,7 +76,6 @@ var sendMessage = function(user, message, room) {
 var chat = io
 .of('/chat')
 .on('connection', (socket) => {
-    console.log(socket.handshake.query.token);
     validateConnection(socket.handshake.query.token, () => {
         logger.log('info', socket.id + ' connected');
 
