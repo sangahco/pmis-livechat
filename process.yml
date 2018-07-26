@@ -1,5 +1,5 @@
 apps:
-  - script   : 'livechat.js'
+  - script   : 'app.js'
     name     : 'Livechat'
     exec_mode: 'cluster'
     instances: 1

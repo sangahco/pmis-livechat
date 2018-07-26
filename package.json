@@ -1,7 +1,7 @@
 {
   "name": "pmis-chat",
   "version": "0.0.1",
-  "description": "my first socket.io app",
+  "description": "Live Chat for PMIS",
   "private": true,
   "author": "SangAh Management Consulting",
   "scripts": {

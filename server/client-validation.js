@@ -4,7 +4,7 @@ const config = require('./config.js');
 exports.validateClient = (token, callback) => {
     const req = http.request({
         hostname: config.client.authentication.host,
-        port: 80,
+        port: config.client.authentication.port,
         path: config.client.authentication.path,
         method: 'POST',
         headers: {

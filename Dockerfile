@@ -18,4 +18,4 @@ RUN set -ex && \
 
 EXPOSE 3000 9615
 
-CMD ["pm2-runtime", "livechat.js", "--web", "9615"]
+CMD ["pm2-runtime", "app.js", "--web", "9615"]
