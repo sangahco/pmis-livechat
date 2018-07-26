@@ -10,9 +10,7 @@ const config = {
     client: {
         authentication: {
             enabled: (process.env.CLIENT_AUTH_ENABLED == 'true') || false,
-            host: process.env.CLIENT_AUTH_HOST || '127.0.0.1',
-            port: process.env.CLIENT_AUTH_PORT || '80',
-            path: process.env.CLIENT_AUTH_PATH || '/'
+            endpoint: process.env.CLIENT_AUTH_ENDPOINT || 'http://127.0.0.1/',
         }
     }
 };
