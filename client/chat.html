@@ -87,58 +87,38 @@
 }
 </style>
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-xs-12 col-sm-9 col-md-10 no-padding">
-            <div class="panel-footer">
-                <form class="form-inline">
-                    <!-- <div class="form-group">
-                        <label class="sr-only">Client Name</label>
-                        <input type="text" class="form-control input-sm" ng-model="clientName" placeholder="Your Name" ng-required="true"/>
-                    </div> -->
-                    <div class="form-group">
-                        <label class="">Room</label>
-                        <input type="text" class="form-control input-sm" ng-model="roomName" placeholder="Room Name" ng-required="true" />
-                    </div>
-                    <button ng-click="$ctrl.viewService.changeRoom(roomName, clientName)" class="btn btn-warning btn-sm">Join</button>
-                </form>
-            </div>
-            <div class="panel-body">
-                <ul class="chat" >
-                    <message ng-repeat="message in messages track by $index" whom="{{message.user}}" ></message>
-                </ul>
-            </div>
-            <div class="panel-footer">
-                <form class="form-inline">
-                    <div class="form-group"><input ng-model="message" type="text" size="60" class="form-control input-sm" placeholder="Type your message here..." /></div>
-                    <div class="form-group"><button ng-click="$ctrl.sendMessage(message)" class="btn btn-warning btn-sm">Send</button></div>
-                </form>
-            </div>
+<div class="row">
+    <div class="col-xs-12 col-sm-9 col-md-10 no-padding">
+        <div class="panel-body">
+            <ul class="chat" >
+                <message ng-repeat="message in $ctrl.messages track by $index" whom="{{message.user}}" ></message>
+            </ul>
         </div>
-        <div class="col-xs-12 col-sm-3 col-md-2 no-padding">
-            <h5 class="text-center"><strong>About {{roomName}}</strong></h5>
-            <h5 class="text-center" ng-show="clients">{{clients.length}} Members</h5>
-            <div class="text-center" ng-hide="clients.length" style="margin-top: 5px;">
-                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading
-            </div>
-            <table class="table table-condensed table-hover">
-                <tr class="" ng-repeat="client in clients">
-                    <td><span class="glyphicon glyphicon-user" style="color: rgb(63, 196, 63);"></span> {{client.user}} (online)</td>
-                </tr>
-            </table>
+        <div class="panel-footer">
+            <form class="form-inline">
+                <div class="form-group"><input ng-model="$ctrl.message" type="text" size="60" class="form-control input-sm" placeholder="Type your message here..." /></div>
+                <div class="form-group"><button ng-click="$ctrl.sendMessage($ctrl.message)" class="btn btn-warning btn-sm">Send</button></div>
+                <div class="form-group" ng-hide="true"><button ng-click="$ctrl.leaveRoom({ room: $ctrl.roomName })" class="btn btn-danger btn-sm" title="Leave the current room">Leave</button></div>
+            </form>
         </div>
+    </div>
+    <div class="col-xs-12 col-sm-3 col-md-2 no-padding">
+        <h5 class="text-center"><strong>About {{$ctrl.roomName}}</strong></h5>
+        <h5 class="text-center" >{{$ctrl.clients.length}} Members</h5>
+        <div class="text-center" ng-hide="$ctrl.clients.length" style="margin-top: 5px;">
+            <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading
+        </div>
+        <table class="table table-condensed table-hover">
+            <tr class="" ng-repeat="client in $ctrl.clients">
+                <td><span class="glyphicon glyphicon-user" style="color: rgb(63, 196, 63);"></span> {{client.user}} (online)</td>
+            </tr>
+        </table>
     </div>
 </div>
 
 <script>
 (function(){
     "use strict";
-
-    $(window).resize(function(){
-        $('.panel-body').outerHeight($(window).height() - $('.panel-footer').outerHeight() * $('.panel-footer').length - 1);
-    });
-
-    $(window).resize();
 
 })();
 </script>

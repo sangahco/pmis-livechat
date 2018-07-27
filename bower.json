@@ -1,25 +1,44 @@
 {
-    "name": "jobapp",
-    "description": "Job App",
-    "version": "0.0.0",
-    "homepage": "https://dev.sangah.com",
-    "license": "MIT",
-    "private": true,
-    "dependencies": {
-      "angular": "1.7.x",
-      "angular-route": "1.7.x",
-      "jquery": "1.11.x",
-      "socket.io-client": "2.1.x",
-      "bootstrap": "3.2.x"
-    },
-    "install": {
-      "path": "libs",
-      "sources": {
-        "angular": ["bower_components/angular/angular.min.js", "bower_components/angular/angular.min.js.map"],
-        "angular-route": ["bower_components/angular-route/angular-route.min.js", "bower_components/angular-route/angular-route.min.js.map"],
-        "jquery": ["bower_components/jquery/dist/jquery.min.js", "bower_components/jquery/dist/jquery.min.map"],
-        "socket.io-client": ["bower_components/socket.io-client/dist/socket.io.slim.js", "bower_components/socket.io-client/dist/socket.io.slim.js.map"],
-        "bootstrap": ["bower_components/bootstrap/dist/js/bootstrap.min.js", "bower_components/bootstrap/dist/css/bootstrap.min.css"]
-      }
+  "name": "jobapp",
+  "description": "Job App",
+  "version": "0.0.0",
+  "homepage": "https://dev.sangah.com",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "angular": "1.7.x",
+    "angular-route": "1.7.x",
+    "jquery": "1.11.x",
+    "socket.io-client": "2.1.x",
+    "bootstrap": "3.2.x",
+    "datalist-polyfill": "^1.20.1"
+  },
+  "install": {
+    "path": "libs",
+    "sources": {
+      "angular": [
+        "bower_components/angular/angular.min.js",
+        "bower_components/angular/angular.min.js.map"
+      ],
+      "angular-route": [
+        "bower_components/angular-route/angular-route.min.js",
+        "bower_components/angular-route/angular-route.min.js.map"
+      ],
+      "jquery": [
+        "bower_components/jquery/dist/jquery.min.js",
+        "bower_components/jquery/dist/jquery.min.map"
+      ],
+      "socket.io-client": [
+        "bower_components/socket.io-client/dist/socket.io.slim.js",
+        "bower_components/socket.io-client/dist/socket.io.slim.js.map"
+      ],
+      "bootstrap": [
+        "bower_components/bootstrap/dist/js/bootstrap.min.js",
+        "bower_components/bootstrap/dist/css/bootstrap.min.css"
+      ],
+      "datalist-polyfill": [
+        "bower_components/datalist-polyfill/datalist-polyfill.min.js"
+      ]
     }
   }
+}

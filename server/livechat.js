@@ -4,61 +4,24 @@ const http = require('http');
 const server = http.Server(app);
 const Store = require('data-store');
 const randomID = require('random-id');
-const winston = require('winston');
 const config = require('./config');
 const client = require('./client-validation')
 const io = require('socket.io')(server, { path: config.server.webroot + '/ws' });
+const chat = io.of('/chat');
+const logger = require('./logger');
+
+require('./http-routes')(app, chat);
+
 //const dataStore = new Store('dataStore', { path: 'data.json' });
 //dataStore.clear();
-
-let logger = winston.createLogger({
-    level: 'info',
-    format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.printf(info => {
-            return `${info.timestamp} ${info.level}: ${info.message}`;
-        })
-    ),
-    transports: [new winston.transports.Console()]
-});
 
 var validateConnection = (token, callback) => callback();
 if (config.client.authentication.enabled) {
     validateConnection = client.validateClient;
 }
 
-app.use(config.server.webroot + '/libs', express.static( __dirname + '/../libs'));
-app.use(config.server.webroot + '/', express.static( __dirname + '/../client'));
-app.get(config.server.webroot + '/', function(req, res){
-    res.sendFile(__dirname + '/../client/index.html');
-});
-
-app.get(config.server.webroot + '/global/:message', function(req, res){
-    sendGlobalMessage(req.params.message || 'This is a global message!');
-    res.send('OK!')
-});
-
-app.get(config.server.webroot + '/status/:room', function(req, res){
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-
-    let clients = [];
-    for (let socketID in chat.connected) {
-        let socket = chat.connected[socketID]
-        let requestedRoom = req.params.room || 'global';
-        if (socket.room === requestedRoom) {
-            clients.push({
-                id: socket.id,
-                room: socket.room,
-                user: socket.user
-            });
-        }
-    }
-    res.send({ clients: clients });
-});
-
 var sendGlobalMessage = function(message) {
-    chat.emit('chat message', {
+    chat.emit('chat message', null, {
         user: config.server.name,
         msg: message,
         time: new Date()
@@ -66,28 +29,32 @@ var sendGlobalMessage = function(message) {
 }
 
 var sendMessage = function(user, message, room) {
-    chat.to(room).emit('chat message', {
+    chat.to(room).emit('chat message', room, {
         user: user,
         msg: message,
         time: new Date()
     });
 }
 
-var chat = io
-.of('/chat')
-.on('connection', (socket) => {
+chat.on('connection', (socket) => {
     validateConnection(socket.handshake.query.token, () => {
         logger.log('info', socket.id + ' connected');
 
+        socket.user = socket.user || socket.handshake.query.user || 'Guest#' + randomID(5);
+
         socket.on('chat message', (data) => {
-            sendMessage(socket.user, data.msg, socket.room);
+            sendMessage(socket.user, data.msg, data.room);
         });
 
-        socket.on('disconnect', (reason) => {
+        socket.on('disconnecting', (reason) => {
             logger.log('info', socket.id + ' disconnected');
-            sendMessage(config.server.name, socket.user + ' has left the chat', socket.room);
 
-            socket.broadcast.to(socket.room).emit('notification', {
+            let rooms = Object.keys(socket.rooms);
+            for (var i = 0; i < rooms.length; i++) {
+                sendMessage(config.server.name, socket.user + ' has left the chat', rooms[i]);
+            }
+
+            socket.broadcast.emit('notification', {
                 user: socket.user,
                 time: new Date(),
                 msg: socket.user + ' has left the chat'
@@ -95,25 +62,35 @@ var chat = io
         });
 
         socket.on('join room', (data) => {
-            socket.room = data.room || 'global';
-            socket.user = data.user || 'Guest#' + randomID(5);
-
+            let room = data.room || 'global';
             // the client join the room
-            socket.join(socket.room, () => {
-                logger.log('info', socket.id + ' has joined the chat ' + socket.room)
-                sendMessage(config.server.name, socket.user + ' has joined the chat', socket.room);
-                
-                socket.on('notification', (data) => {
-                    logger.info('##1111');
-                    //sendMessage(config.server.name, data.msg, socket.room);
-                });
+            socket.join(room, () => {
+                logger.log('info', socket.id + ' has joined the chat ' + room)
+                sendMessage(config.server.name, socket.user + ' has joined the chat', room);
 
-                socket.broadcast.to(socket.room).emit('notification', {
+                // send a callback to the client with the room joined
+                //chat.to(socket.id).emit('joined', room, { rooms: Object.keys(socket.rooms) });
+
+                socket.broadcast.to(room).emit('notification', {
                     user: socket.user,
                     time: new Date(),
                     msg: socket.user + ' has joined the chat'
                 });
+
             });
+        });
+
+        socket.on('leave room', (data) => {
+            let rooms = Object.keys(socket.rooms);
+            if (rooms.includes(data.room)){
+                socket.leave(data.room);
+                sendMessage(config.server.name, socket.user + ' has left the chat', data.room);
+                socket.broadcast.emit('notification', {
+                    user: socket.user,
+                    time: new Date(),
+                    msg: socket.user + ' has left the chat'
+                });
+            }
         });
 
         socket.emit('validated');

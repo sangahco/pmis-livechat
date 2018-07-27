@@ -1,0 +1,49 @@
+<style>
+.no-padding {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+chat {
+    display: none;
+}
+chat.active {
+    display: block;
+}
+</style>
+
+<div class="container-fluid" >
+    <div class="row">
+        <div class="panel-footer">
+            <form class="form-inline">
+                <div class="form-group" ng-show="$ctrl.rooms.length">
+                    <label>Room</label>
+                    <select aria-label="Active Room" class="form-control input-sm" ng-model="$ctrl.activeRoom" >
+                        <option ng-repeat="room in $ctrl.rooms">{{room}}</option>
+                    </select>
+                    <button ng-show="$ctrl.activeRoom" ng-click="$ctrl.leaveRoom($ctrl.activeRoom)" class="btn btn-danger btn-sm" title="Leave the current room">Leave</button>
+                </div>
+                
+                <div class="form-group">
+                    <input aria-label="New Room Input" type="text" list="rooms" class="form-control input-sm" ng-model="$ctrl.roomName" placeholder="Join new room" />
+                    <datalist id="rooms">
+                        <option ng-repeat="room in $ctrl.rooms">{{room}}</option>
+                    </datalist>
+                    <button ng-click="$ctrl.joinRoom($ctrl.roomName)" class="btn btn-warning btn-sm" title="Join a new room">Join</button>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+    <!-- <div class="col-xs-1 no-padding">
+        <h5 class="text-center"><strong>Rooms</strong></h5>
+        <table class="table table-condensed table-hover">
+            <tr ng-repeat="room in $ctrl.rooms" ng-click="$ctrl.activeRoom = room">
+                <td>{{room}}</td>
+            </tr>
+        </table>
+    </div> -->
+    <div class="col-xs-12 no-padding">
+        <chat ng-repeat="room in $ctrl.rooms" room-name="room" leave-room="$ctrl.leaveRoom(room)" ng-class="{active: $ctrl.activeRoom == room}" ></chat>
+    </div>
+</div>

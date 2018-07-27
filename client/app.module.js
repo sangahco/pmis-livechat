@@ -1,7 +1,7 @@
 (function(){
     "use strict";
 
-    var app = angular.module("app", ['ngRoute', 'chat', 'chatView', 'notification']);
+    var app = angular.module("app", ['ngRoute', 'chat', 'chatManager', 'chatView', 'notification']);
 
     app.config(['$locationProvider', '$routeProvider',
         function config($locationProvider, $routeProvider) {
@@ -9,19 +9,19 @@
 
         $routeProvider.
             when('/', {
-                template: '<chat></chat>'
+                template: '<chat-manager></chat-manager>'
             }).
             when('/chat/:room', {
-                template: '<chat></chat>'
+                template: '<chat-manager></chat-manager>'
             }).
             when('/chat/:room/user/:clientName', {
-                template: '<chat></chat>'
+                template: '<chat-manager></chat-manager>'
             }).
             when('/user/:clientName', {
-                template: '<chat></chat>'
+                template: '<chat-manager></chat-manager>'
             }).
             when('/user/:clientName/chat/:room', {
-                template: '<chat></chat>'
+                template: '<chat-manager></chat-manager>'
             }).
             otherwise('/');
         }
