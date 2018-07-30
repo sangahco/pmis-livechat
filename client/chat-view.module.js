@@ -3,7 +3,7 @@
 
     var app = angular.module("chatView", ["chat"])
 
-    app.directive("message", ["$log", "$rootScope", function($log, $rootScope){
+    app.directive("message", [function(){
         return {
             restrict: "E",
             templateUrl: function(elem, attrs){
@@ -12,8 +12,8 @@
         };
     }]);
 
-    app.controller('ChatViewController', ["$log", "$routeParams", "$element", "$rootScope", "$scope", "$interval", "chatService",
-    function ChatViewController($log, $routeParams, $element, $rootScope, $scope, $interval, chatService) {
+    app.controller('ChatViewController', ["$log", "$element", "$scope", "$interval", "chatService",
+    function ChatViewController($log, $element, $scope, $interval, chatService) {
         const $ctrl = this;
         const socket = chatService.socket;
 
@@ -22,13 +22,15 @@
         $ctrl.clients = [];
         $ctrl.rooms = [];
 
-        socket.on('chat message', function(room, data){
+        var chatMessageCallback = function(room, data){
             $log.log('on chat message');
             if ($ctrl.roomName === room) {
                 $ctrl.messages.push(data);
                 $scope.$digest();
             }
-        });
+        }
+
+        socket.on('chat message', chatMessageCallback);
 
         $ctrl.sendMessage = function(msg){
             msg && chatService.sendMessage(msg, $ctrl.roomName);
@@ -44,13 +46,14 @@
 
         var stopTime = $interval(function() { 
             $ctrl.findClients();
-        }, 5000);
-
-        // listen on DOM destroy (removal) event, and cancel the next UI update
-        // to prevent updating time after the DOM element was removed.
+        }, 10000);
+        
         $element.on('$destroy', function() {
             $interval.cancel(stopTime);
+            socket.off('chat message', chatMessageCallback);
         });
+
+        $scope.$emit('resize');
     }]);
 
     app.component('chat', {

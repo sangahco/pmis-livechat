@@ -89,9 +89,9 @@
 
 <div class="row">
     <div class="col-xs-12 col-sm-9 col-md-10 no-padding">
-        <div class="panel-body">
+        <div class="panel-body chat-body-wrapper">
             <ul class="chat" >
-                <message ng-repeat="message in $ctrl.messages track by $index" whom="{{message.user}}" ></message>
+                <message ng-repeat="message in $ctrl.messages track by $index" whom="message.user" ></message>
             </ul>
         </div>
         <div class="panel-footer">

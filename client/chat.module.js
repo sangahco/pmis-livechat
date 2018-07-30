@@ -5,8 +5,8 @@
     const path = location.pathname.substring(0, location.pathname.lastIndexOf('/'));
     const host = '';
 
-    app.service("chatService", ['$log', '$routeParams', 'HttpRequestService', 'notificationService', 
-    function($log, $routeParams, httpRequest, notificationService){
+    app.service("chatService", ['$log', '$routeParams', '$q', 'HttpRequestService', 'notificationService', 
+    function($log, $routeParams, $q, httpRequest, notificationService){
         var socket;
 
         socket = io.connect(host + '/chat', {
@@ -21,15 +21,27 @@
             notificationService.notifyMe(data.msg);
         });
 
+        var deferValidated = $q.defer();
         socket.on('validated', function(msg){
-            $log.log('reconnected...');
+            $log.log('client connected');
+            deferValidated.resolve();
+        });
+
+        socket.on('disconnect', function(msg) {
+            $log.log('client disconnected');
+            deferValidated = $q.defer();
         });
 
         return {
 
             socket: socket,
 
+            onConnected: function() {
+                return deferValidated.promise;
+            },
+
             joinRoom: function(room){
+                $log.log('join request');
                 socket.emit('join room', {
                     room: room
                 });
@@ -57,7 +69,15 @@
             },
 
             findMyRooms: () => {
-                
+                if (socket.id) {
+                    let clientID = socket.id.substring(socket.id.lastIndexOf('#') + 1);
+                    return httpRequest.request({
+                        url: host + path + "/client/" + clientID
+                    }).then(( response ) => {
+                        return response.data;
+                    });
+                }
+                return $q.defer().promise;
             },
 
             findPublicRooms: () => {

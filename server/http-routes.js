@@ -1,5 +1,6 @@
 const express = require('express');
 const config = require('./config.js');
+const namespace = '/chat';
 
 module.exports = function(app, io){
     let chat = io;
@@ -24,7 +25,7 @@ module.exports = function(app, io){
         let rooms = Object.keys(chat.adapter.rooms);
         for (var i = 0; i < rooms.length; i++) {
             let roomName = rooms[i];
-            if (!roomName.startsWith('/chat#')) {
+            if (!roomName.startsWith(namespace + '#')) {
                 let room = {
                     name: roomName,
                     clients: []
@@ -62,19 +63,26 @@ module.exports = function(app, io){
         res.send({ clients: clients });
     });
 
-    // app.get(config.server.webroot + '/socket/:socketID', function(req, res){
-    //     let response = {};
+    app.get(config.server.webroot + '/client/:client', function(req, res){
+        let response = {};
 
-    //     let socket = chat.sockets[req.params.socketID];
-    //     if (socket) {
-    //         let rooms = Object.keys(socket.rooms);
-    //         response = {
-    //             rooms: rooms,
-    //             user: socket.user,
-    //             id: socket.id
-    //         };
-    //     }
+        let socket = chat.sockets[namespace + '#' + req.params.client];
+        if (socket) {
+            let rooms = Object.keys(socket.rooms);
+            response = {
+                rooms: [],
+                user: socket.user,
+                id: socket.id
+            };
+
+            for (var i = 0; i < rooms.length; i++) {
+                let roomName = rooms[i];
+                if (!roomName.startsWith(namespace + '#')) {
+                    response.rooms.push(roomName);
+                }
+            }
+        }
         
-    //     res.send(response)
-    // });
+        res.send(response)
+    });
 }

@@ -3,13 +3,12 @@
 
     var app = angular.module("chatManager", ['chat']);
 
-    app.controller('ChatManagerController', ['$location', '$log', '$routeParams', '$scope', 'chatService', 
-    function($location, $log, $routeParams, $scope, chatService){
+    app.controller('ChatManagerController', 
+    ['$location', '$log', '$routeParams', '$scope', '$interval', '$element', '$window', 'chatService', 
+    function($location, $log, $routeParams, $scope, $interval, $element, $window, chatService){
         const $ctrl = this;
-        $ctrl.rooms = [];
+        $ctrl.rooms = ['global'];
         $ctrl.activeRoom = "";
-
-        const socket = chatService.socket;
 
         $ctrl.joinRoom = function(room){
             let rooms = $ctrl.rooms;
@@ -17,9 +16,9 @@
                 rooms.push(room);
             }
             $ctrl.activeRoom = room;
-            chatService.joinRoom(room);
-
             $ctrl.roomName = "";
+            
+            chatService.joinRoom(room);
         }
 
         $ctrl.leaveRoom = function(room){
@@ -32,11 +31,27 @@
 
         $ctrl.findMyRooms = function(){
             chatService.findMyRooms().then((result) => {
-                $ctrl.rooms = result.rooms;
+                $ctrl.rooms = result.rooms || [];
             });
         }
 
-        $ctrl.joinRoom($routeParams.room || "global");
+        // join the default room on connection
+        chatService.onConnected().then(() => $ctrl.joinRoom($routeParams.room || $ctrl.rooms[0]));
+
+        var stopTime = $interval(function() { 
+            $ctrl.findMyRooms();
+        }, 10000);
+
+        $scope.$on('resize', () => {
+            //angular.element('.chat-body-wrapper').outerHeight($window.innerHeight - 102);
+        });
+
+        angular.element($window).on('resize', () => $scope.$emit('resize'));
+        
+        $element.on('$destroy', function() {
+            $interval.cancel(stopTime);
+            angular.element($window).off('resize');
+        });
     }]);
 
     app.component('chatManager', {
