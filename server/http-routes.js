@@ -1,5 +1,7 @@
 const express = require('express');
 const config = require('./config.js');
+const clientValidation = require('./client-validation')
+const firebaseAdmin = require('./firebase-admin');
 const namespace = '/chat';
 
 module.exports = function(app, io){
@@ -84,5 +86,22 @@ module.exports = function(app, io){
         }
         
         res.send(response)
+    });
+
+    app.get(config.server.webroot + '/auth/:token', function(req, res){
+        clientValidation.validateClient(req.params.token)
+        .then(async (result) => {
+            let uid = '1234';
+            let firebaseToken = await firebaseAdmin.auth().createCustomToken(uid)
+            .catch(function(error) {
+                console.log("Error creating custom token:", error);
+                res.send(error);
+            });
+
+            res.send({ token: firebaseToken });
+        })
+        .catch((error) => {
+            res.send(error);
+        });
     });
 }

@@ -15,7 +15,7 @@ require('./http-routes')(app, chat);
 //const dataStore = new Store('dataStore', { path: 'data.json' });
 //dataStore.clear();
 
-var validateConnection = (token, callback) => callback();
+var validateConnection = () => { return new Promise((resolve) => resolve())};
 if (config.client.authentication.enabled) {
     validateConnection = client.validateClient;
 }
@@ -37,7 +37,9 @@ var sendMessage = function(user, message, room) {
 }
 
 chat.on('connection', (socket) => {
-    validateConnection(socket.handshake.query.token, () => {
+    validateConnection(socket.handshake.query.token)
+    .then(function(){
+        
         logger.log('info', socket.id + ' connected');
 
         socket.user = socket.user || socket.handshake.query.user || 'Guest#' + randomID(5);
