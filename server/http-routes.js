@@ -8,9 +8,9 @@ module.exports = function(app, io){
     let chat = io;
 
     app.use(config.server.webroot + '/libs', express.static( __dirname + '/../libs'));
-    app.use(config.server.webroot + '/', express.static( __dirname + '/../client'));
+    app.use(config.server.webroot + '/', express.static( __dirname + '/../client-mdl'));
     app.get(config.server.webroot + '/', function(req, res){
-        res.sendFile(__dirname + '/../client/index.html');
+        res.sendFile(__dirname + '/../client-mdl/index.html');
     });
 
     app.get(config.server.webroot + '/global/:message', function(req, res){

@@ -1,0 +1,108 @@
+<style>
+.chat
+{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.chat li
+{
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px dotted #B3A9A9;
+}
+
+.chat li.left .chat-body
+{
+    margin-left: 60px;
+}
+
+.chat li.right .chat-body
+{
+    margin-right: 60px;
+}
+
+
+.chat li .chat-body p
+{
+    margin: 0;
+    color: #777777;
+}
+</style>
+
+<div class="mdl-grid chat-container">
+    <div id="messages-card-container" class="mdl-cell mdl-cell--9-col">
+
+        <!-- Messages container -->
+        <div id="messages-card" class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
+            <div class="mdl-card__supporting-text mdl-color-text--grey-600">
+            <div id="messages">
+                <span id="message-filler"></span>
+                <message ng-repeat="message in $ctrl.messages track by $index" whom="message.user" ></message>
+            </div>
+
+            <!-- chat form -->
+            <form id="message-form" >
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="message" ng-model="$ctrl.message">
+                <label class="mdl-textfield__label" for="message">Message...</label>
+                </div>
+                <button type="submit" ng-click="$ctrl.sendMessage($ctrl.message)" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+                Send
+                </button>
+            </form>
+
+            <!-- image upload form -->
+            <form id="image-form" hidden>
+                <input id="mediaCapture" type="file" accept="image/*" capture="camera">
+                <button type="button" title="Add an image" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--amber-400 mdl-color-text--white">
+                <i class="material-icons chat-icon">image</i>
+                </button>
+            </form>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- right panel with members and rooms list -->
+    <div class="mdl-cell mdl-cell--3-col">
+        <div class="right-panel-list-container mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+            <!-- <h5 class="text-center"><strong>About {{$ctrl.roomName}}</strong></h5>
+            <h5 class="text-center" >{{$ctrl.clients.length}} Members</h5> -->
+            <div class="mdl-tabs__tab-bar">
+                <a ng-href="#{{$ctrl.roomName}}-members-panel" class="mdl-tabs__tab is-active">Members</a>
+                <a ng-href="#{{$ctrl.roomName}}-rooms-panel" class="mdl-tabs__tab" >Rooms</a>
+            </div>
+            <div class="mdl-tabs__panel is-active" id="{{$ctrl.roomName}}-members-panel">
+                <ul class="demo-list-item mdl-list">
+                    <li class="mdl-list__item" ng-repeat="client in $ctrl.clients">
+                        <span class="mdl-list__item-primary-content">
+                        <i style="color:rgb(0, 139, 12);" class="material-icons mdl-list__item-icon">person</i>
+                        {{client.user}} (online)
+                        </span>
+                    </li>
+                </ul>
+            </div>
+            <div class="mdl-tabs__panel" id="{{$ctrl.roomName}}-rooms-panel">
+                <ul class="demo-list-item mdl-list">
+                    <li class="mdl-list__item" ng-repeat="room in $ctrl.publicRooms">
+                        <span class="mdl-list__item-primary-content">
+                        <i style="color:rgb(75, 75, 75);" class="material-icons mdl-list__item-icon">chat</i>
+                        {{room.name}}
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="mdl-layout-spacer"></div>
+        <div>
+            <form>
+                <button type="button" ng-click="$ctrl.leaveRoom({ room: $ctrl.roomName })" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
+                Leave Room
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

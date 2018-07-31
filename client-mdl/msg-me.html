@@ -1,0 +1,8 @@
+<div class="message-container visible">
+    <div class="spacing">
+        <div class="pic" style="background-image: url(&quot;http://placehold.it/50/FA6F57/fff.gif&text=U&quot;);"></div>
+    </div>
+    <div class="message">{{message.msg}}</div>
+    <div class="name">{{message.user || 'SYSTEM'}}</div>
+    <div class="time" data-time="{{message.time}}">({{message.time | date:'medium'}})</div>
+</div>
