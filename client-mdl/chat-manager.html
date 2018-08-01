@@ -32,9 +32,11 @@
         </div>
         <!-- Tabs -->
         <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
-            <a ng-href="#{{room}}" class="mdl-layout__tab" 
-            ng-class="['mdl-layout__tab', {'is-active': $ctrl.activeRoom == room}]" 
-            ng-repeat="room in $ctrl.rooms" ng-click="$ctrl.activeRoom = room" >{{room}}</a>
+            <a ng-repeat="room in $ctrl.rooms" ng-click="$ctrl.activeRoom = room" target="_self" prevent-default
+            href="#{{room}}" ng-class="['mdl-layout__tab', {'is-active': $ctrl.activeRoom == room}]">{{room}}</a>
+            <!-- <a href="#test1" class="mdl-layout__tab" ng-click="$ctrl.activeRoom = 'test1'" >test1</a>
+            <a href="#test2" class="mdl-layout__tab" ng-click="$ctrl.activeRoom = 'test2'">test2</a>
+            <a href="#test3" class="mdl-layout__tab" ng-click="$ctrl.activeRoom = 'test3'">test3</a>  -->
         </div>
     </header>
 
@@ -52,8 +54,7 @@
     
     <!-- main container -->
     <main class="mdl-layout__content mdl-color--grey-100">
-        <section ng-class="['mdl-layout__tab-panel', {'is-active': $ctrl.activeRoom == room}]" ng-repeat="room in $ctrl.rooms" id="{{room}}" >
-            <chat class="page-content" room-name="room" leave-room="$ctrl.leaveRoom(room)" public-rooms="$ctrl.publicRooms"></chat>
-        </section>
+        <chat ng-class="['page-content', 'mdl-layout__tab-panel', {'is-active': $ctrl.activeRoom == room}]" active="$ctrl.activeRoom == room" ng-repeat="room in $ctrl.rooms" id="{{room}}"
+        room-name="room" leave-room="$ctrl.leaveRoom" public-rooms="$ctrl.publicRooms" join-room="$ctrl.joinRoom"></chat>
     </main>
 </div>

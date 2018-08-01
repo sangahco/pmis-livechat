@@ -4,14 +4,16 @@
     var app = angular.module("chatManager", ['chat']);
 
     app.controller('ChatManagerController', 
-    ['$location', '$log', '$routeParams', '$scope', '$interval', '$element', '$window', 'chatService', 
-    function($location, $log, $routeParams, $scope, $interval, $element, $window, chatService){
+    ['$location', '$log', '$routeParams', '$scope', '$interval', '$timeout', '$element', '$window', '$anchorScroll', 'chatService', 
+    function($location, $log, $routeParams, $scope, $interval, $timeout, $element, $window, $anchorScroll, chatService){
         const $ctrl = this;
         $ctrl.publicRooms = [];
         $ctrl.rooms = ['global'];
         $ctrl.activeRoom = "";
 
         $ctrl.joinRoom = function(room){
+            if (!room) return;
+
             let rooms = $ctrl.rooms;
             if (!rooms.includes(room)){
                 rooms.push(room);
@@ -48,7 +50,7 @@
             $ctrl.findMyRooms();
             $ctrl.findPublicRooms();
         }, 2000);
-
+        
         angular.element($window).on('resize', () => $scope.$emit('resize'));
         
         $element.on('$destroy', function() {

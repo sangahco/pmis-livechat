@@ -43,9 +43,9 @@
             </div>
 
             <!-- chat form -->
-            <form id="message-form" >
+            <form id="message-form" name="messageForm">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" id="message" ng-model="$ctrl.message">
+                <input class="mdl-textfield__input" type="text" id="message" ng-model="$ctrl.message" >
                 <label class="mdl-textfield__label" for="message">Message...</label>
                 </div>
                 <button type="submit" ng-click="$ctrl.sendMessage($ctrl.message)" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
@@ -69,11 +69,9 @@
     <!-- right panel with members and rooms list -->
     <div class="mdl-cell mdl-cell--3-col">
         <div class="right-panel-list-container mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
-            <!-- <h5 class="text-center"><strong>About {{$ctrl.roomName}}</strong></h5>
-            <h5 class="text-center" >{{$ctrl.clients.length}} Members</h5> -->
             <div class="mdl-tabs__tab-bar">
-                <a ng-href="#{{$ctrl.roomName}}-members-panel" class="mdl-tabs__tab is-active">Members</a>
-                <a ng-href="#{{$ctrl.roomName}}-rooms-panel" class="mdl-tabs__tab" >Rooms</a>
+                <a ng-href="#{{$ctrl.roomName}}-members-panel" class="mdl-tabs__tab is-active">{{$ctrl.clients.length}} Members</a>
+                <a ng-href="#{{$ctrl.roomName}}-rooms-panel" class="mdl-tabs__tab" >{{$ctrl.publicRooms.length}} Rooms</a>
             </div>
             <div class="mdl-tabs__panel is-active" id="{{$ctrl.roomName}}-members-panel">
                 <ul class="demo-list-item mdl-list">
@@ -87,11 +85,14 @@
             </div>
             <div class="mdl-tabs__panel" id="{{$ctrl.roomName}}-rooms-panel">
                 <ul class="demo-list-item mdl-list">
-                    <li class="mdl-list__item" ng-repeat="room in $ctrl.publicRooms">
+                    <li class="mdl-list__item" ng-repeat="room in $ctrl.publicRooms" >
                         <span class="mdl-list__item-primary-content">
-                        <i style="color:rgb(75, 75, 75);" class="material-icons mdl-list__item-icon">chat</i>
-                        {{room.name}}
+                        <i style="color:rgb(75, 75, 75);" class="material-icons mdl-list__item-icon mdl-badge mdl-badge--overlap" 
+                        data-badge="{{room.clients.length}}">group</i>
+                        <span>{{room.name}}</span>
                         </span>
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--accent" 
+                        ng-click="$ctrl.joinRoom(room.name)" title="Join the room"><i class="material-icons" >add</i></button>
                     </li>
                 </ul>
             </div>
@@ -99,7 +100,8 @@
         <div class="mdl-layout-spacer"></div>
         <div>
             <form>
-                <button type="button" ng-click="$ctrl.leaveRoom({ room: $ctrl.roomName })" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
+                <button type="button" ng-click="$ctrl.leaveRoom($ctrl.roomName)" 
+                class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" title="Leave the room">
                 Leave Room
                 </button>
             </form>

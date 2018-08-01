@@ -35,6 +35,17 @@
         */
     });
 
+    app.directive('preventDefault', function() {
+        return {
+            restrict: 'A',
+            link: function(scope, elem, attrs) {
+                elem.on('click', function(e){
+                    e.preventDefault();
+                });
+            }
+       };
+    }); 
+
     app.config(['$locationProvider', '$routeProvider',
         function config($locationProvider, $routeProvider) {
         $locationProvider.hashPrefix('!');

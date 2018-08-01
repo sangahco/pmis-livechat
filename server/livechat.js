@@ -12,7 +12,7 @@ const logger = require('./logger');
 
 require('./http-routes')(app, chat);
 
-//const dataStore = new Store('dataStore', { path: 'data.json' });
+const dataStore = new Store('dataStore', { path: 'data.json' });
 //dataStore.clear();
 
 var validateConnection = () => { return new Promise((resolve) => resolve())};

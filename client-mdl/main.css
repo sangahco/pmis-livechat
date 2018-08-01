@@ -206,11 +206,11 @@ main, #messages-card {
 .mdl-textfield--floating-label.is-focused .mdl-textfield__label {
     color: #0288D1;
 }
-.mdl-button .material-icons {
+/* .mdl-button .material-icons {
     top: -1px;
     margin-right: 5px;
-}
+} */
 .right-panel-list-container{
     height: calc(100% - 55px);
 }
-section {height: 100%;}
+chat {height: 100%;}

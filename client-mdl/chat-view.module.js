@@ -44,8 +44,10 @@
             });
         }
 
-        var stopTime = $interval(function() { 
-            $ctrl.findClients();
+        var stopTime = $interval(function() {
+            if ($ctrl.active) {
+                $ctrl.findClients();
+            }
         }, 2000);
         
         $element.on('$destroy', function() {
@@ -61,8 +63,10 @@
         controller: 'ChatViewController',
         bindings: {
             roomName: '<',
-            leaveRoom: '&',
-            publicRooms: '<'
+            leaveRoom: '<',
+            publicRooms: '<',
+            joinRoom: '<',
+            active: '<'
         }
     });
 
