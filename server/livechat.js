@@ -34,6 +34,23 @@ var sendMessage = function(user, message, room) {
         msg: message,
         time: new Date()
     });
+
+    storeMessage(user, message, room);
+}
+
+var storeMessage = function(user, message, room){
+    let rooms = dataStore.get('rooms') || {};
+    dataStore.set('rooms', rooms);
+    let messages = dataStore.get('rooms.' + room + '.messages') || {};
+    messages[randomID(16)] = { name: user, text: message, time: new Date(), profilePicUrl: '' };
+    dataStore.set('rooms.' + room + '.messages', messages);
+}
+
+module.exports.loadMessages = function(room){
+    logger.log('info', 'Retrieving messages for room ' + room);
+    let messages = dataStore.get('rooms.' + room + '.messages');
+    console.log(messages);
+    return messages;
 }
 
 chat.on('connection', (socket) => {

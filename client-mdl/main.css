@@ -20,15 +20,15 @@ html, body {
 .chat-container{
     height: calc(100% - 16px);
 }
-main, #messages-card {
+main, .messages-card {
     height: 100%;
     padding-bottom: 0;
 }
-#messages-card-container {
+.messages-card-container {
     height: calc(100% - 35px);
     padding-bottom: 0;
 }
-#messages-card {
+.messages-card {
     margin-top: 15px;
 }
 /* .mdl-layout__header-row span {
@@ -53,14 +53,14 @@ main, #messages-card {
     padding-top: 0;
     padding-bottom: 0;
 }
-#messages {
+.messages {
     overflow-y: auto;
     margin-bottom: 10px;
     height: calc(100% - 80px);
     display: flex;
     flex-direction: column;
 }
-#message-filler {
+.message-filler {
     flex-grow: 1;
 }
 .message-container:first-of-type {

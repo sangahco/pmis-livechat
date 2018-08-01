@@ -27,6 +27,10 @@
             if ($ctrl.roomName === room) {
                 $ctrl.messages.push(data);
                 $scope.$digest();
+
+                // let messagesDom = angular.element(document).find('.messages');
+                // console.log(messagesDom);
+                //.scrollTop = angular.element('.messages').scrollHeight
             }
         }
 
@@ -39,11 +43,24 @@
 
         $ctrl.findClients = function(){
             chatService.findClients($ctrl.roomName)
-            .then(function(result){
-                $ctrl.clients = result.clients;
+            .then(function(clients){
+                $ctrl.clients = clients;
             });
         }
 
+        $scope.$watch($ctrl.roomName, async () => {
+            let messages = await chatService.loadMessages($ctrl.roomName)
+            let messageKeys = Object.keys(messages);
+            for (let i = 0; i < messageKeys.length; i++) {
+                let key = messageKeys[i];
+                $ctrl.messages.push({
+                    user: messages[key].name,
+                    msg: messages[key].text,
+                    time: messages[key].time
+                });
+            }
+        });
+        
         var stopTime = $interval(function() {
             if ($ctrl.active) {
                 $ctrl.findClients();

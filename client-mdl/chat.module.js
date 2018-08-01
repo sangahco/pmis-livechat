@@ -60,11 +60,20 @@
                 });
             },
 
+            loadMessages: (room) => {
+                return httpRequest.request({
+                    url: host + path + "/room/" + room
+                }).then((response) => {
+                    $log.log(response.data);
+                    return response.data.messages || {};
+                });
+            },
+
             findClients: (room) => {
                 return httpRequest.request({
                     url: host + path + "/room/" + room
                 }).then(( response ) => {
-                    return response.data;
+                    return response.data.clients;
                 });
             },
 

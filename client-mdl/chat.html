@@ -32,13 +32,13 @@
 </style>
 
 <div class="mdl-grid chat-container">
-    <div id="messages-card-container" class="mdl-cell mdl-cell--9-col">
+    <div class="messages-card-container mdl-cell mdl-cell--9-col">
 
         <!-- Messages container -->
-        <div id="messages-card" class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
+        <div class="messages-card mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
             <div class="mdl-card__supporting-text mdl-color-text--grey-600">
-            <div id="messages">
-                <span id="message-filler"></span>
+            <div class="messages">
+                <span class="message-filler"></span>
                 <message ng-repeat="message in $ctrl.messages track by $index" whom="message.user" ></message>
             </div>
 
