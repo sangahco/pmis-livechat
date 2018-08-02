@@ -4,22 +4,52 @@ const clientAuth = require('./client-validation')
 //const firebaseAdmin = require('./firebase-admin');
 const livechat = require('./livechat');
 const namespace = '/chat';
+const session = require('client-sessions');
+
+
+var requireLogin = function(req, res, next) {
+    if (req.session && req.session.status == 'ok') {
+        next();
+    } else {
+        clientAuth.validateClient(req.query.token)
+        .then(() => {
+            req.session.status = 'ok';
+            next();
+        })
+        .catch((error) => {
+            req.session && req.session.reset();
+            res.status(error.statusCode || 400).send(error);
+        });
+    }
+}
 
 module.exports = function(app, io){
     let chat = io;
 
+    app.use(session({
+        cookieName: 'session',
+        secret: 'really secret here',
+        duration: 30 * 60 * 1000,
+        activeDuration: 5 * 60 * 1000,
+    }));
+
     app.use(config.server.webroot + '/libs', express.static( __dirname + '/../libs'));
     app.use(config.server.webroot + '/', express.static( __dirname + '/../client'));
-    app.get(config.server.webroot + '/', function(req, res){
+    app.get(config.server.webroot + '/', requireLogin, function (req, res){
         res.sendFile(__dirname + '/../client/index.html');
     });
 
-    app.get(config.server.webroot + '/global/:message', function(req, res){
+    app.get(config.server.webroot + '/logout', function(req, res) {
+        req.session && req.session.reset();
+        res.redirect('/');
+    });
+
+    app.get(config.server.webroot + '/global/:message', requireLogin, function (req, res){
         livechat.sendGlobalMessage(req.params.message || 'This is a global message!');
         res.send('OK!')
     });
 
-    app.get(config.server.webroot + '/rooms', function(req, res){
+    app.get(config.server.webroot + '/rooms', requireLogin, function (req, res){
         // res.header("Access-Control-Allow-Origin", "*");
         // res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
@@ -46,7 +76,7 @@ module.exports = function(app, io){
         res.send(response);
     });
 
-    app.get(config.server.webroot + '/room/:room', function(req, res){
+    app.get(config.server.webroot + '/room/:room', requireLogin, function(req, res){
         let clients = [];
         for (let socketID in chat.connected) {
             let socket = chat.connected[socketID]
@@ -66,7 +96,7 @@ module.exports = function(app, io){
         res.send(response);
     });
 
-    app.get(config.server.webroot + '/client/:client', function(req, res){
+    app.get(config.server.webroot + '/client/:client', requireLogin, function(req, res){
         let response = {};
 
         let socket = chat.sockets[namespace + '#' + req.params.client];
@@ -88,16 +118,6 @@ module.exports = function(app, io){
         
         res.send(response)
     });
-
-    var authenticateAndProcess = function(req, res, onSuccess) {
-        clientAuth.validateClient(req.query.token)
-        .then((req, res) => {
-            onSuccess(req, res);
-        })
-        .catch((error) => {
-            res.status(error.statusCode || 400).send(error);
-        });
-    }
 
     // app.get(config.server.webroot + '/auth/:token', function(req, res){
     //     clientValidation.validateClient(req.params.token)

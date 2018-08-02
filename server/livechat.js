@@ -10,8 +10,10 @@ const io = require('socket.io')(server, { path: config.server.webroot + '/ws' })
 const chat = io.of('/chat');
 const logger = require('./logger');
 const Message = require('./message');
-
 require('./http-routes')(app, chat);
+const session = require('client-sessions');
+
+
 
 const dataStore = new Store('dataStore', { path: 'data.json' });
 //dataStore.clear();
