@@ -1,50 +1,60 @@
-<style>
-.no-padding {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-}
-</style>
+<!-- layout root container -->
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
 
-<div class="container-fluid" >
-    <div class="row">
-        <div class="panel-footer">
-            <form class="form-inline">
-                <div class="form-group" ng-show="$ctrl.rooms.length">
-                    <div class="form-group">
-                        <label>Room</label>
-                        <select aria-label="Active Room" class="form-control input-sm" ng-model="$ctrl.activeRoom" >
-                            <option ng-repeat="room in $ctrl.rooms">{{room}}</option>
-                        </select>
-                    </div>
-                    <div class="form-group"><button ng-show="$ctrl.activeRoom" ng-click="$ctrl.leaveRoom($ctrl.activeRoom)" class="btn btn-danger btn-sm" title="Leave the current room">Leave</button></div>
-                </div>
-                
-                <div class="form-group">
-                    <div class="form-group">
-                        <input aria-label="New Room Input" type="text" list="rooms" class="form-control input-sm" ng-model="$ctrl.roomName" placeholder="Join new room" />
+    <!-- Header section containing logo -->
+    <header class="mdl-layout__header mdl-color-text--white mdl-color--light-blue-700">
+        
+        <div class="mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-grid">
+            <div class="mdl-layout-icon"></div>
+
+            <div class="mdl-layout__header-row mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
+                <h3><i class="material-icons chat-icon">chat_bubble_outline</i> PMIS Live Chat</h3>
+                <div class="mdl-layout-spacer"></div>
+
+                <form>
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="new-room-name" ng-model="$ctrl.roomName" lists="rooms">
                         <datalist id="rooms">
                             <option ng-repeat="room in $ctrl.rooms">{{room}}</option>
                         </datalist>
+                        <label class="mdl-textfield__label" for="new-room-name">Join a Room...</label>
                     </div>
-                    <div class="form-group"><button ng-click="$ctrl.joinRoom($ctrl.roomName)" class="btn btn-warning btn-sm" title="Join a new room">Join</button></div>
-                </div>
-                
-            </form>
+                    <button type="submit" ng-click="$ctrl.joinRoom($ctrl.roomName)" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
+                    Join
+                    </button>
+                </form>
+                <!-- <nav class="mdl-navigation">
+                    <a class="mdl-navigation__link" href="#">Nav link 1</a>
+                    <a class="mdl-navigation__link" href="#">Nav link 2</a>
+                    <a class="mdl-navigation__link" href="#">Nav link 3</a>
+                </nav> -->
+            </div>
         </div>
-    </div>
-    <!-- <div class="col-xs-1 no-padding">
-        <h5 class="text-center"><strong>Rooms</strong></h5>
-        <table class="table table-condensed table-hover">
-            <tr ng-repeat="room in $ctrl.rooms" ng-click="$ctrl.activeRoom = room">
-                <td>{{room}}</td>
-            </tr>
-        </table>
-    </div> -->
-    <div class="col-xs-12 no-padding">
-        <chat ng-repeat="room in $ctrl.rooms" room-name="room" leave-room="$ctrl.leaveRoom" 
-        active="$ctrl.activeRoom == room" ng-show="$ctrl.activeRoom == room" ></chat>
-    </div>
-</div>
+        <!-- Tabs -->
+        <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+            <a ng-repeat="room in $ctrl.rooms" ng-click="$ctrl.activeRoom = room" target="_self" prevent-default
+            href="#{{room}}" ng-class="['mdl-layout__tab', {'is-active': $ctrl.activeRoom == room}]">{{room}}</a>
+            <!-- <a href="#test1" class="mdl-layout__tab" ng-click="$ctrl.activeRoom = 'test1'" >test1</a>
+            <a href="#test2" class="mdl-layout__tab" ng-click="$ctrl.activeRoom = 'test2'">test2</a>
+            <a href="#test3" class="mdl-layout__tab" ng-click="$ctrl.activeRoom = 'test3'">test3</a>  -->
+        </div>
+    </header>
 
-<script>
-</script>
+    <!-- left menu for small device -->
+    <!-- <div class="mdl-layout__drawer">
+        <span class="mdl-layout__title">Material Design Lite</span>
+        <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="#">Hello</a>
+            <a class="mdl-navigation__link" href="#">World.</a>
+            <a class="mdl-navigation__link" href="#">How</a>
+            <a class="mdl-navigation__link" href="#">Are</a>
+            <a class="mdl-navigation__link" href="#">You?</a>
+        </nav>
+    </div> -->
+    
+    <!-- main container -->
+    <main class="mdl-layout__content mdl-color--grey-100">
+        <chat ng-class="['page-content', 'mdl-layout__tab-panel', {'is-active': $ctrl.activeRoom == room}]" active="$ctrl.activeRoom == room" ng-repeat="room in $ctrl.rooms" id="{{room}}"
+        room-name="room" leave-room="$ctrl.leaveRoom" public-rooms="$ctrl.publicRooms" join-room="$ctrl.joinRoom"></chat>
+    </main>
+</div>
