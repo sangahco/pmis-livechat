@@ -3,6 +3,7 @@ node_modules
 build
 dist
 firebase-account-key.json
+data.json
 
 # Logs
 logs

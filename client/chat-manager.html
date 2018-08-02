@@ -41,7 +41,8 @@
         </table>
     </div> -->
     <div class="col-xs-12 no-padding">
-        <chat ng-repeat="room in $ctrl.rooms" room-name="room" leave-room="$ctrl.leaveRoom(room)" ng-show="$ctrl.activeRoom == room" ></chat>
+        <chat ng-repeat="room in $ctrl.rooms" room-name="room" leave-room="$ctrl.leaveRoom" 
+        active="$ctrl.activeRoom == room" ng-show="$ctrl.activeRoom == room" ></chat>
     </div>
 </div>
 

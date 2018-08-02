@@ -2,6 +2,7 @@ const express = require('express');
 const config = require('./config.js');
 const clientValidation = require('./client-validation')
 const firebaseAdmin = require('./firebase-admin');
+const livechat = require('./livechat');
 const namespace = '/chat';
 
 module.exports = function(app, io){
@@ -14,7 +15,7 @@ module.exports = function(app, io){
     });
 
     app.get(config.server.webroot + '/global/:message', function(req, res){
-        sendGlobalMessage(req.params.message || 'This is a global message!');
+        livechat.sendGlobalMessage(req.params.message || 'This is a global message!');
         res.send('OK!')
     });
 
@@ -57,12 +58,15 @@ module.exports = function(app, io){
             if (Object.keys(socket.rooms).includes(req.params.room)) {
                 clients.push({
                     id: socket.id,
-                    room: req.params.room,
                     user: socket.user
                 });
             }
         }
-        res.send({ clients: clients });
+
+        let messages = livechat.loadMessages(req.params.room);
+        let response = { clients: clients, messages: messages };
+
+        res.send(response);
     });
 
     app.get(config.server.webroot + '/client/:client', function(req, res){

@@ -4,13 +4,16 @@
     var app = angular.module("chatManager", ['chat']);
 
     app.controller('ChatManagerController', 
-    ['$location', '$log', '$routeParams', '$scope', '$interval', '$element', '$window', 'chatService', 
-    function($location, $log, $routeParams, $scope, $interval, $element, $window, chatService){
+    ['$location', '$log', '$routeParams', '$scope', '$interval', '$timeout', '$element', '$window', '$anchorScroll', 'chatService', 
+    function($location, $log, $routeParams, $scope, $interval, $timeout, $element, $window, $anchorScroll, chatService){
         const $ctrl = this;
+        $ctrl.publicRooms = [];
         $ctrl.rooms = ['global'];
         $ctrl.activeRoom = "";
 
         $ctrl.joinRoom = function(room){
+            if (!room) return;
+
             let rooms = $ctrl.rooms;
             if (!rooms.includes(room)){
                 rooms.push(room);
@@ -35,28 +38,49 @@
             });
         }
 
+        $ctrl.findPublicRooms = async () => {
+            let result = await chatService.findPublicRooms();
+            $ctrl.publicRooms = result.rooms;
+        }
+
         // join the default room on connection
         chatService.onConnected().then(() => $ctrl.joinRoom($routeParams.room || $ctrl.rooms[0]));
 
         var stopTime = $interval(function() { 
             $ctrl.findMyRooms();
-        }, 10000);
-
-        $scope.$on('resize', () => {
-            //angular.element('.chat-body-wrapper').outerHeight($window.innerHeight - 102);
-        });
-
-        angular.element($window).on('resize', () => $scope.$emit('resize'));
-        
+            $ctrl.findPublicRooms();
+        }, 2000);
+                
         $element.on('$destroy', function() {
             $interval.cancel(stopTime);
-            angular.element($window).off('resize');
+            //angular.element($window).off('resize');
         });
     }]);
 
+    // chat manager as component
     app.component('chatManager', {
         templateUrl: 'chat-manager.html',
         controller: 'ChatManagerController'
     });
+
+    // chat manager as directive
+    // app.directive('chatManager', ['$window', function($window){
+    //     return {
+    //         restrict: 'E',
+    //         templateUrl: 'chat-manager.html',
+    //         controller: 'ChatManagerController',
+    //         scope: {},
+    //         controllerAs: '$ctrl',
+    //         link: function(scope, element, attrs){
+    //             angular.element($window).on('resize', () => {
+    //                 scope.$emit('resize');
+    //             });
+        
+    //             element.on('$destroy', function() {
+    //                 angular.element($window).off('resize');
+    //             });
+    //         }
+    //     }
+    // }]);
 
 })();
