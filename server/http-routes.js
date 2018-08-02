@@ -15,7 +15,7 @@ module.exports = function(app, io){
     });
 
     app.get(config.server.webroot + '/global/:message', function(req, res){
-        sendGlobalMessage(req.params.message || 'This is a global message!');
+        livechat.sendGlobalMessage(req.params.message || 'This is a global message!');
         res.send('OK!')
     });
 

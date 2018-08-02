@@ -15,7 +15,7 @@
         var mdlUpgradeDom = false;
         setInterval(function() {
             if (mdlUpgradeDom) {
-                console.log('upgrading dom...');
+                //console.log('upgrading dom...');
                 componentHandler.upgradeDom();
                 mdlUpgradeDom = false;
             }

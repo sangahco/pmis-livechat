@@ -5,56 +5,68 @@ const server = http.Server(app);
 const Store = require('data-store');
 const randomID = require('random-id');
 const config = require('./config');
-const client = require('./client-validation')
+const clientAuth = require('./client-validation')
 const io = require('socket.io')(server, { path: config.server.webroot + '/ws' });
 const chat = io.of('/chat');
 const logger = require('./logger');
+const Message = require('./message');
 
 require('./http-routes')(app, chat);
 
 const dataStore = new Store('dataStore', { path: 'data.json' });
 //dataStore.clear();
 
-var validateConnection = () => { return new Promise((resolve) => resolve())};
-if (config.client.authentication.enabled) {
-    validateConnection = client.validateClient;
+module.exports.sendGlobalMessage = function(text) {
+    let message = new Message(text, config.server.name);
+    console.log(message);
+    chat.emit('chat message', null, message);
 }
 
-var sendGlobalMessage = function(message) {
-    chat.emit('chat message', null, {
-        user: config.server.name,
-        msg: message,
-        time: new Date()
-    });
+var sendMessage = function(message, room) {
+    chat.to(room).emit('chat message', room, message);
 }
 
-var sendMessage = function(user, message, room) {
-    chat.to(room).emit('chat message', room, {
-        user: user,
-        msg: message,
-        time: new Date()
-    });
-
-    storeMessage(user, message, room);
-}
-
-var storeMessage = function(user, message, room){
+var storeMessage = function(message, room){
     let rooms = dataStore.get('rooms') || {};
     dataStore.set('rooms', rooms);
     let messages = dataStore.get('rooms.' + room + '.messages') || {};
-    messages[randomID(16)] = { name: user, text: message, time: new Date(), profilePicUrl: '' };
     dataStore.set('rooms.' + room + '.messages', messages);
+
+    //messages[message.id] = message;
+    dataStore.set('rooms.' + room + '.messages.' + message.id, message);
+    //messages[randomID(16)] = { name: user, text: message, time: new Date(), profilePicUrl: '' };
 }
 
 module.exports.loadMessages = function(room){
-    logger.log('info', 'Retrieving messages for room ' + room);
     let messages = dataStore.get('rooms.' + room + '.messages');
-    console.log(messages);
     return messages;
 }
 
+var cleanStorage = function(){
+    let rooms = chat.adapter.rooms;
+    let cachedRooms = dataStore.get('rooms');
+
+    logger.info('Active rooms %s', Object.keys(rooms));
+
+    Object.keys(cachedRooms).forEach((key) => {
+        logger.log('info', 'Checking room %s for cleanup', key);
+        if (!rooms[key]) {
+            delete cachedRooms[key];
+        }
+    });
+
+    dataStore.set('rooms', cachedRooms);
+}
+
+var handleMessage = function(name, text, room) {
+    let message = new Message(text, name);
+
+    sendMessage(message, room);
+    storeMessage(message, room);
+}
+
 chat.on('connection', (socket) => {
-    validateConnection(socket.handshake.query.token)
+    clientAuth.validateClient(socket.handshake.query.token)
     .then(function(){
         
         logger.log('info', socket.id + ' connected');
@@ -62,7 +74,7 @@ chat.on('connection', (socket) => {
         socket.user = socket.user || socket.handshake.query.user || 'Guest#' + randomID(5);
 
         socket.on('chat message', (data) => {
-            sendMessage(socket.user, data.msg, data.room);
+            handleMessage(socket.user, data.msg, data.room);
         });
 
         socket.on('disconnecting', (reason) => {
@@ -70,7 +82,7 @@ chat.on('connection', (socket) => {
 
             let rooms = Object.keys(socket.rooms);
             for (var i = 0; i < rooms.length; i++) {
-                sendMessage(config.server.name, socket.user + ' has left the chat', rooms[i]);
+                handleMessage(config.server.name, socket.user + ' has left the chat', rooms[i]);
             }
 
             socket.broadcast.emit('notification', {
@@ -80,12 +92,16 @@ chat.on('connection', (socket) => {
             });
         });
 
+        socket.on('disconnect', () => {
+            cleanStorage();
+        });
+
         socket.on('join room', (data) => {
             let room = data.room || 'global';
             // the client join the room
             socket.join(room, () => {
                 logger.log('info', socket.id + ' has joined the chat ' + room)
-                sendMessage(config.server.name, socket.user + ' has joined the chat', room);
+                handleMessage(config.server.name, socket.user + ' has joined the chat', room);
 
                 // send a callback to the client with the room joined
                 //chat.to(socket.id).emit('joined', room, { rooms: Object.keys(socket.rooms) });
@@ -103,7 +119,7 @@ chat.on('connection', (socket) => {
             let rooms = Object.keys(socket.rooms);
             if (rooms.includes(data.room)){
                 socket.leave(data.room);
-                sendMessage(config.server.name, socket.user + ' has left the chat', data.room);
+                handleMessage(config.server.name, socket.user + ' has left the chat', data.room);
                 socket.broadcast.emit('notification', {
                     user: socket.user,
                     time: new Date(),

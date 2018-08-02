@@ -64,7 +64,6 @@
                 return httpRequest.request({
                     url: host + path + "/room/" + room
                 }).then((response) => {
-                    $log.log(response.data);
                     return response.data.messages || {};
                 });
             },

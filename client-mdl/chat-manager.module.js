@@ -50,18 +50,37 @@
             $ctrl.findMyRooms();
             $ctrl.findPublicRooms();
         }, 2000);
-        
-        angular.element($window).on('resize', () => $scope.$emit('resize'));
-        
+                
         $element.on('$destroy', function() {
             $interval.cancel(stopTime);
-            angular.element($window).off('resize');
+            //angular.element($window).off('resize');
         });
     }]);
 
+    // chat manager as component
     app.component('chatManager', {
         templateUrl: 'chat-manager.html',
         controller: 'ChatManagerController'
     });
+
+    // chat manager as directive
+    // app.directive('chatManager', ['$window', function($window){
+    //     return {
+    //         restrict: 'E',
+    //         templateUrl: 'chat-manager.html',
+    //         controller: 'ChatManagerController',
+    //         scope: {},
+    //         controllerAs: '$ctrl',
+    //         link: function(scope, element, attrs){
+    //             angular.element($window).on('resize', () => {
+    //                 scope.$emit('resize');
+    //             });
+        
+    //             element.on('$destroy', function() {
+    //                 angular.element($window).off('resize');
+    //             });
+    //         }
+    //     }
+    // }]);
 
 })();
