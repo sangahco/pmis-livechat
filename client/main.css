@@ -44,9 +44,9 @@ main, .messages-card {
     top: 8px;
     position: relative;
 }
-.mdl-layout__header-row {
+/* .mdl-layout__header-row {
     margin: 0 auto;
-}
+} */
 .mdl-card__supporting-text {
     width: auto;
     height: 100%;
