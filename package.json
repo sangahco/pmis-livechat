@@ -17,6 +17,7 @@
   "dependencies": {
     "bower": "latest",
     "bower-installer": "latest",
+    "client-sessions": "^0.8.0",
     "data-store": "^3.0.3",
     "express": "^4.15.2",
     "firebase-admin": "^5.13.1",

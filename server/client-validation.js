@@ -25,7 +25,7 @@ if (config.client.authentication.enabled) {
                     console.error(error.message);
                     // consume response data to free up memory
                     res.resume();
-                    reject({ error: error.message });
+                    reject({ error: error.message, statusCode: statusCode });
                 }
         
                 resolve({token: token});
