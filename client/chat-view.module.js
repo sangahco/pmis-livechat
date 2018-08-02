@@ -50,7 +50,7 @@
 
         var chatMessageCallback = function(room, message){
             if (!room || $ctrl.roomName === room) {
-                $ctrl.messages.push(message);
+                pushMessage(message);
                 $scope.$digest();
             }
         }
@@ -71,8 +71,19 @@
             let messageKeys = Object.keys(messages);
             for (let i = 0; i < messageKeys.length; i++) {
                 let key = messageKeys[i];
-                $ctrl.messages.push(messages[key]);
+                pushMessage(messages[key]);
             }
+        }
+
+        var pushMessage = function(message){
+            let found = false;
+            $ctrl.messages.forEach(msg => {
+                if (msg.id == message.id) {
+                    found = true;
+                    return;
+                }
+            });
+            !found && $ctrl.messages.push(message);
         }
 
         $scope.$watch($ctrl.roomName, loadMessages);
