@@ -1,6 +1,6 @@
 const express = require('express');
 const config = require('./config.js');
-const clientValidation = require('./client-validation')
+const clientAuth = require('./client-validation')
 //const firebaseAdmin = require('./firebase-admin');
 const livechat = require('./livechat');
 const namespace = '/chat';
@@ -20,8 +20,8 @@ module.exports = function(app, io){
     });
 
     app.get(config.server.webroot + '/rooms', function(req, res){
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        // res.header("Access-Control-Allow-Origin", "*");
+        // res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
         let response = { rooms: [] };
 
@@ -47,9 +47,6 @@ module.exports = function(app, io){
     });
 
     app.get(config.server.webroot + '/room/:room', function(req, res){
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "X-Requested-With");
-
         let clients = [];
         for (let socketID in chat.connected) {
             let socket = chat.connected[socketID]
@@ -91,6 +88,16 @@ module.exports = function(app, io){
         
         res.send(response)
     });
+
+    var authenticateAndProcess = function(req, res, onSuccess) {
+        clientAuth.validateClient(req.query.token)
+        .then((req, res) => {
+            onSuccess(req, res);
+        })
+        .catch((error) => {
+            res.status(error.statusCode || 400).send(error);
+        });
+    }
 
     // app.get(config.server.webroot + '/auth/:token', function(req, res){
     //     clientValidation.validateClient(req.params.token)
