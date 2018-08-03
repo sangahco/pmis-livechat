@@ -16,7 +16,7 @@
                 };
 
                 if (!("Notification" in window)) {
-                    alert("This browser does not support system notifications");
+                    //alert("This browser does not support system notifications");
                 }
             
                 // Let's check whether notification permissions have already been granted
