@@ -8,7 +8,7 @@
     function($location, $log, $routeParams, $scope, $interval, $element, $window, $anchorScroll, chatService){
         const $ctrl = this;
         $ctrl.publicRooms = [];
-        $ctrl.rooms = ['global'];
+        $ctrl.rooms = [];
         $ctrl.activeRoom = "";
         $ctrl.unreadCount = {};
 
