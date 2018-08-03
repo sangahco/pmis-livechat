@@ -1,5 +1,7 @@
 # It's Live Chat!
 
+![Chat Room Screenshot](https://github.com/sangahco/pmis-livechat/raw/master/docs/screen1.png)
+
 Before doing anything else make sure you have these applications:
 
 - [npm](https://nodejs.org/it/download/)
@@ -45,6 +47,11 @@ The following folders will be created under the root folder:
 
 - libs
   > Contains the libraries required by the application (jquery,bootstrap,angular).
+
+You will be presented with the following page
+
+![Main Page Screenshot](https://github.com/sangahco/pmis-livechat/raw/master/docs/screen2.png)
+
 
 ## 3. Distribute the Client source for production
 
