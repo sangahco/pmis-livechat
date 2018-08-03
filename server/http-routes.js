@@ -41,7 +41,7 @@ module.exports = function(app, io){
 
     app.get(config.server.webroot + '/logout', function(req, res) {
         req.session && req.session.reset();
-        res.redirect('/');
+        res.redirect(config.server.webroot + '/');
     });
 
     app.get(config.server.webroot + '/global/:message', requireLogin, function (req, res){
