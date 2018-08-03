@@ -31,7 +31,7 @@
 }
 </style>
 
-<div class="mdl-grid chat-container">
+<div class="mdl-grid  chat-container">
     <div class="messages-card-container mdl-cell mdl-cell--9-col mdl-cell--8-col-tablet">
 
         <!-- Messages container -->
@@ -71,7 +71,7 @@
         <div class="right-panel-list-container mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
             <div class="mdl-tabs__tab-bar">
                 <a ng-href="#{{$ctrl.roomName}}-members-panel" class="mdl-tabs__tab is-active">{{$ctrl.clients.length}} Members</a>
-                <a ng-href="#{{$ctrl.roomName}}-rooms-panel" class="mdl-tabs__tab" >{{$ctrl.publicRooms.length}} Rooms</a>
+                <!-- <a ng-href="#{{$ctrl.roomName}}-rooms-panel" class="mdl-tabs__tab" >{{$ctrl.publicRooms.length}} Rooms</a> -->
             </div>
             <div class="mdl-tabs__panel is-active" id="{{$ctrl.roomName}}-members-panel">
                 <ul class="demo-list-item mdl-list">
@@ -83,7 +83,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="mdl-tabs__panel" id="{{$ctrl.roomName}}-rooms-panel">
+            <!-- <div class="mdl-tabs__panel" id="{{$ctrl.roomName}}-rooms-panel">
                 <ul class="demo-list-item mdl-list">
                     <li class="mdl-list__item" ng-repeat="room in $ctrl.publicRooms" >
                         <span class="mdl-list__item-primary-content">
@@ -91,11 +91,11 @@
                         data-badge="{{room.clients.length}}">group</i>
                         <span>{{room.name}}</span>
                         </span>
-                        <button type="button" class="mdl-button mdl-js-button mdl-button--accent" 
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--icon mdl-button--accent" 
                         ng-click="$ctrl.joinRoom(room.name)" title="Join the room"><i class="material-icons" >add</i></button>
                     </li>
                 </ul>
-            </div>
+            </div> -->
         </div>
         <div class="mdl-layout-spacer"></div>
         <div>

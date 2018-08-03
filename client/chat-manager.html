@@ -4,7 +4,7 @@
     <!-- Header section containing logo -->
     <header class="mdl-layout__header mdl-color-text--white mdl-color--light-blue-700">
         
-        <div class="mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-grid">
+        <div class="mdl-grid mdl-grid--no-spacing mdl-cell--12-col">
             <div class="mdl-layout-icon"></div>
 
             <div class="mdl-layout__header-row mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
@@ -39,20 +39,27 @@
     </header>
 
     <!-- left menu for small device -->
-    <!-- <div class="mdl-layout__drawer">
-        <span class="mdl-layout__title">Material Design Lite</span>
+    <div class="mdl-layout__drawer">
+        <span class="mdl-layout__title">{{$ctrl.publicRooms.length}} Rooms</span>
         <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="#">Hello</a>
-            <a class="mdl-navigation__link" href="#">World.</a>
-            <a class="mdl-navigation__link" href="#">How</a>
-            <a class="mdl-navigation__link" href="#">Are</a>
-            <a class="mdl-navigation__link" href="#">You?</a>
+            <ul class="mdl-list">
+                <li class="mdl-list__item" ng-repeat="room in $ctrl.publicRooms" >
+                    <span class="mdl-list__item-primary-content">
+                    <i style="color:rgb(75, 75, 75);" class="material-icons mdl-list__item-icon mdl-badge mdl-badge--overlap" 
+                    data-badge="{{room.clients.length}}">group</i>
+                    <span>{{room.name}}</span>
+                    </span>
+                    <button ng-show="$ctrl.rooms.indexOf(room.name)==-1" type="button" class="mdl-button mdl-js-button mdl-button--icon mdl-button--accent" 
+                    ng-click="$ctrl.joinRoom(room.name)" title="Join the room"><i class="material-icons" >add</i></button>
+                </li>
+            </ul>
         </nav>
-    </div> -->
+    </div>
     
     <!-- main container -->
     <main class="mdl-layout__content mdl-color--grey-100">
         <chat ng-class="['page-content', 'mdl-layout__tab-panel', {'is-active': $ctrl.activeRoom == room}]" active="$ctrl.activeRoom == room" ng-repeat="room in $ctrl.rooms" id="{{room}}"
         room-name="room" leave-room="$ctrl.leaveRoom" public-rooms="$ctrl.publicRooms" join-room="$ctrl.joinRoom" set-unread-count="$ctrl.setUnreadCount"></chat>
     </main>
+    
 </div>
