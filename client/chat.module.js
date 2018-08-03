@@ -41,7 +41,6 @@
             },
 
             joinRoom: function(room){
-                $log.log('join request');
                 socket.emit('join room', {
                     room: room
                 });
