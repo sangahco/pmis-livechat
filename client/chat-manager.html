@@ -3,33 +3,31 @@
 
     <!-- Header section containing logo -->
     <header class="mdl-layout__header mdl-color-text--white mdl-color--light-blue-700">
-        
-        <div class="mdl-grid mdl-grid--no-spacing mdl-cell--12-col">
-            <div class="mdl-layout-icon"></div>
+        <div class="mdl-layout-icon"></div>
 
-            <div class="mdl-layout__header-row mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
-                <h3><i class="material-icons chat-icon">chat_bubble_outline</i> PMIS Live Chat</h3>
-                <div class="mdl-layout-spacer"></div>
+        <div class="mdl-layout__header-row">
+            <h3><i class="material-icons chat-icon">chat_bubble_outline</i> PMIS Live Chat</h3>
+            <div class="mdl-layout-spacer"></div>
 
-                <form>
-                    <div class="mdl-textfield mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="new-room-name" ng-model="$ctrl.roomName" lists="rooms">
-                        <datalist id="rooms">
-                            <option ng-repeat="room in $ctrl.rooms">{{room}}</option>
-                        </datalist>
-                        <label class="mdl-textfield__label" for="new-room-name">Join a Room...</label>
-                    </div>
-                    <button type="submit" ng-click="$ctrl.joinRoom($ctrl.roomName)" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
-                    Join
-                    </button>
-                </form>
-                <!-- <nav class="mdl-navigation">
-                    <a class="mdl-navigation__link" href="#">Nav link 1</a>
-                    <a class="mdl-navigation__link" href="#">Nav link 2</a>
-                    <a class="mdl-navigation__link" href="#">Nav link 3</a>
-                </nav> -->
-            </div>
+            <form class="mdl-layout--large-screen-only">
+                <div class="mdl-textfield mdl-js-textfield">
+                    <input class="mdl-textfield__input" type="text" id="new-room-name" ng-model="$ctrl.roomName" lists="rooms">
+                    <datalist id="rooms">
+                        <option ng-repeat="room in $ctrl.rooms">{{room}}</option>
+                    </datalist>
+                    <label class="mdl-textfield__label" for="new-room-name">Join a Room...</label>
+                </div>
+                <button type="submit" ng-click="$ctrl.joinRoom($ctrl.roomName)" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
+                Join
+                </button>
+            </form>
+            <!-- <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="#">Nav link 1</a>
+                <a class="mdl-navigation__link" href="#">Nav link 2</a>
+                <a class="mdl-navigation__link" href="#">Nav link 3</a>
+            </nav> -->
         </div>
+        <div class="mdl-grid mdl-grid--no-spacing" ></div>
         <!-- Tabs -->
         <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
             <a ng-repeat="room in $ctrl.rooms" ng-click="$ctrl.activeRoom = room" target="_self" prevent-default
@@ -58,8 +56,26 @@
     
     <!-- main container -->
     <main class="mdl-layout__content mdl-color--grey-100">
-        <chat ng-class="['page-content', 'mdl-layout__tab-panel', {'is-active': $ctrl.activeRoom == room}]" active="$ctrl.activeRoom == room" ng-repeat="room in $ctrl.rooms" id="{{room}}"
+        <chat ng-class="['page-content', 'mdl-layout__tab-panel', {'is-active': $ctrl.activeRoom == room}]" active="$ctrl.activeRoom == room" 
+        ng-repeat="room in $ctrl.rooms" id="{{room}}"
         room-name="room" leave-room="$ctrl.leaveRoom" public-rooms="$ctrl.publicRooms" join-room="$ctrl.joinRoom" set-unread-count="$ctrl.setUnreadCount"></chat>
+
+
+        <div class="mdl-grid" ng-hide="$ctrl.rooms.length">
+            <div class="welcome-card mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--4-col-phone mdl-cell--3-offset-desktop mdl-cell--1-offset-tablet mdl-card mdl-shadow--2dp">
+                <div class="mdl-card__title">
+                    <h2 class="mdl-card__title-text">Welcome to Live Chat</h2>
+                </div>
+                <div class="mdl-card__supporting-text">
+                    Join a room to get started
+                </div>
+                <div class="mdl-card__actions mdl-card--border">
+                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" ng-click="$ctrl.joinRoom('global')">
+                    Join Global
+                    </a>
+                </div>
+            </div>
+        </div>
     </main>
     
 </div>

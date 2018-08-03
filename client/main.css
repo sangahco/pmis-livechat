@@ -47,7 +47,7 @@ main, .messages-card {
 /* .mdl-layout__header-row {
     margin: 0 auto;
 } */
-.mdl-card__supporting-text {
+.messages-card .mdl-card__supporting-text {
     width: auto;
     height: 100%;
     padding-top: 0;
@@ -214,3 +214,9 @@ main, .messages-card {
     height: calc(100% - 55px);
 }
 chat {height: 100%;}
+
+.welcome-card > .mdl-card__title {
+color: #fff;
+height: 176px;
+background: url('images/welcome-cover.jpg') center / cover;
+}
