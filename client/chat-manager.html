@@ -13,7 +13,7 @@
                     <div class="form-group">
                         <label>Room</label>
                         <select aria-label="Active Room" class="form-control input-sm" ng-model="$ctrl.activeRoom" >
-                            <option ng-repeat="room in $ctrl.rooms">{{room}}</option>
+                            <option ng-repeat="room in $ctrl.rooms" ng-value="room">{{room}} ({{$ctrl.unreadCount[room]}})</option>
                         </select>
                     </div>
                     <div class="form-group"><button ng-show="$ctrl.activeRoom" ng-click="$ctrl.leaveRoom($ctrl.activeRoom)" class="btn btn-danger btn-sm" title="Leave the current room">Leave</button></div>
@@ -41,7 +41,7 @@
         </table>
     </div> -->
     <div class="col-xs-12 no-padding">
-        <chat ng-repeat="room in $ctrl.rooms" room-name="room" leave-room="$ctrl.leaveRoom" 
+        <chat ng-repeat="room in $ctrl.rooms" room-name="room" leave-room="$ctrl.leaveRoom" set-unread-count="$ctrl.setUnreadCount"
         active="$ctrl.activeRoom == room" ng-show="$ctrl.activeRoom == room" ></chat>
     </div>
 </div>

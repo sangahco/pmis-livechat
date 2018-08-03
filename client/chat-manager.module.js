@@ -4,24 +4,21 @@
     var app = angular.module("chatManager", ['chat']);
 
     app.controller('ChatManagerController', 
-    ['$location', '$log', '$routeParams', '$scope', '$interval', '$timeout', '$element', '$window', '$anchorScroll', 'chatService', 
-    function($location, $log, $routeParams, $scope, $interval, $timeout, $element, $window, $anchorScroll, chatService){
+    ['$location', '$log', '$routeParams', '$scope', '$interval', '$element', '$window', '$anchorScroll', 'chatService', 
+    function($location, $log, $routeParams, $scope, $interval, $element, $window, $anchorScroll, chatService){
         const $ctrl = this;
         $ctrl.publicRooms = [];
         $ctrl.rooms = ['global'];
         $ctrl.activeRoom = "";
+        $ctrl.unreadCount = {};
 
         $ctrl.joinRoom = function(room){
             if (!room) return;
 
-            let rooms = $ctrl.rooms;
-            if (!rooms.includes(room)){
-                rooms.push(room);
-            }
             $ctrl.activeRoom = room;
             $ctrl.roomName = "";
-            
             chatService.joinRoom(room);
+            $ctrl.findMyRooms();
         }
 
         $ctrl.leaveRoom = function(room){
@@ -43,6 +40,10 @@
             $ctrl.publicRooms = result.rooms;
         }
 
+        $ctrl.setUnreadCount = (room, count) => {
+            $ctrl.unreadCount[room] = count;
+        }
+
         // join the default room on connection
         chatService.onConnected().then(() => $ctrl.joinRoom($routeParams.room || $ctrl.rooms[0]));
 
@@ -53,7 +54,6 @@
                 
         $element.on('$destroy', function() {
             $interval.cancel(stopTime);
-            //angular.element($window).off('resize');
         });
     }]);
 

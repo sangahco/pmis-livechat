@@ -35,7 +35,8 @@
             leaveRoom: '<',
             publicRooms: '<',
             joinRoom: '<',
-            active: '<'
+            active: '<',
+            setUnreadCount: '<'
         }
     });
 
@@ -47,10 +48,15 @@
         $ctrl.messages = [];
         $ctrl.roomName = $ctrl.roomName || 'global';
         $ctrl.clients = [];
+        $ctrl.unreadCount = 0;
 
         var chatMessageCallback = function(room, message){
             if (!room || $ctrl.roomName === room) {
                 pushMessage(message);
+                if (!$ctrl.active) {
+                    $ctrl.unreadCount++;
+                    $ctrl.setUnreadCount($ctrl.roomName, $ctrl.unreadCount);
+                }
                 $scope.$digest();
             }
         }
@@ -86,7 +92,12 @@
             !found && $ctrl.messages.push(message);
         }
 
-        $scope.$watch($ctrl.roomName, loadMessages);
+        $scope.$watch('$ctrl.roomName', loadMessages);
+
+        $scope.$watch('$ctrl.active', (newVal, oldVal) => {
+            if (newVal) $ctrl.unreadCount = 0;
+            $ctrl.setUnreadCount($ctrl.roomName, $ctrl.unreadCount);
+        });
         
         var stopTime = $interval(function() {
             if ($ctrl.active) {
