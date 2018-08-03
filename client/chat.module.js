@@ -31,7 +31,7 @@
             $log.log('client disconnected');
             deferValidated = $q.defer();
         });
-
+        
         return {
 
             socket: socket,
@@ -92,6 +92,13 @@
                     url: host + path + "/rooms"
                 }).then(( response ) => {
                     return response.data;
+                });
+            },
+
+            authenticate: () => {
+                return httpRequest.request({
+                    url: host + path + "/login",
+                    params: { token: $routeParams.token }
                 });
             }
 

@@ -12,6 +12,9 @@
         $ctrl.activeRoom = "";
         $ctrl.unreadCount = {};
 
+        // TODO should be moved else where
+        chatService.authenticate();
+
         $ctrl.joinRoom = function(room){
             if (!room) return;
 

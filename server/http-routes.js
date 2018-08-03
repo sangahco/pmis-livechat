@@ -5,7 +5,7 @@ const clientAuth = require('./client-validation')
 const livechat = require('./livechat');
 const namespace = '/chat';
 const session = require('client-sessions');
-
+const path = require('path');
 
 var requireLogin = function(req, res, next) {
     if (req.session && req.session.status == 'ok') {
@@ -33,15 +33,21 @@ module.exports = function(app, io){
         activeDuration: 5 * 60 * 1000,
     }));
 
+    app.get(config.server.webroot + '/', function (req, res){
+        res.sendFile(path.resolve(__dirname + '/../client/index.html'));
+    });
+
+    // static asset after the root path
     app.use(config.server.webroot + '/libs', express.static( __dirname + '/../libs'));
     app.use(config.server.webroot + '/', express.static( __dirname + '/../client'));
-    app.get(config.server.webroot + '/', requireLogin, function (req, res){
-        res.sendFile(__dirname + '/../client/index.html');
-    });
 
     app.get(config.server.webroot + '/logout', function(req, res) {
         req.session && req.session.reset();
         res.redirect(config.server.webroot + '/');
+    });
+
+    app.get(config.server.webroot + '/login', requireLogin, function(req, res) {
+        res.json(req.session);
     });
 
     app.get(config.server.webroot + '/global/:message', requireLogin, function (req, res){

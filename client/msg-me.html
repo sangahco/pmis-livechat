@@ -1,6 +1,6 @@
 <div class="message-container visible">
     <div class="spacing">
-        <div class="pic" style="background-image: url(&quot;{{message.profilePicUrl}}&quot;);"></div>
+        <div class="pic" ng-style="{'background-image': 'url(&quot;{{message.profilePicUrl}}&quot;)' }"></div>
     </div>
     <div class="message">{{message.text}}</div>
     <div class="name">{{message.name || 'SYSTEM'}}</div>
