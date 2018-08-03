@@ -217,6 +217,6 @@ chat {height: 100%;}
 
 .welcome-card > .mdl-card__title {
 color: #fff;
-height: 176px;
+height: 200px;
 background: url('images/welcome-cover.jpg') center / cover;
 }
