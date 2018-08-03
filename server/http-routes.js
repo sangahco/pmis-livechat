@@ -50,8 +50,8 @@ module.exports = function(app, io){
     });
 
     app.get(config.server.webroot + '/rooms', requireLogin, function (req, res){
-        // res.header("Access-Control-Allow-Origin", "*");
-        // res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
         let response = { rooms: [] };
 
@@ -76,6 +76,9 @@ module.exports = function(app, io){
     });
 
     app.get(config.server.webroot + '/room/:room', requireLogin, function(req, res){
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+
         let clients = [];
         for (let socketID in chat.connected) {
             let socket = chat.connected[socketID]
@@ -96,6 +99,9 @@ module.exports = function(app, io){
     });
 
     app.get(config.server.webroot + '/client/:client', requireLogin, function(req, res){
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        
         let response = {};
 
         let socket = chat.sockets[namespace + '#' + req.params.client];
