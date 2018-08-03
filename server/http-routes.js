@@ -50,8 +50,8 @@ module.exports = function(app, io){
     });
 
     app.get(config.server.webroot + '/rooms', requireLogin, function (req, res){
-        // res.header("Access-Control-Allow-Origin", "*");
-        // res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
         let response = { rooms: [] };
 
@@ -65,11 +65,10 @@ module.exports = function(app, io){
                 };
                 
                 let sockets = Object.keys(chat.adapter.rooms[roomName].sockets);
-                for (var j = 0; j < sockets.length; j++) {
-                    let socketName = sockets[j];
-                    let socket = chat.sockets[socketName];
+                sockets.forEach((socketID) => {
+                    let socket = chat.sockets[socketID];
                     room.clients.push(socket.user);
-                }
+                });
                 response.rooms.push(room);
             }
         }
@@ -77,6 +76,9 @@ module.exports = function(app, io){
     });
 
     app.get(config.server.webroot + '/room/:room', requireLogin, function(req, res){
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+
         let clients = [];
         for (let socketID in chat.connected) {
             let socket = chat.connected[socketID]
@@ -97,23 +99,24 @@ module.exports = function(app, io){
     });
 
     app.get(config.server.webroot + '/client/:client', requireLogin, function(req, res){
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        
         let response = {};
 
         let socket = chat.sockets[namespace + '#' + req.params.client];
         if (socket) {
-            let rooms = Object.keys(socket.rooms);
             response = {
                 rooms: [],
                 user: socket.user,
                 id: socket.id
             };
 
-            for (var i = 0; i < rooms.length; i++) {
-                let roomName = rooms[i];
-                if (!roomName.startsWith(namespace + '#')) {
-                    response.rooms.push(roomName);
+            Object.keys(socket.rooms).forEach((room) => {
+                if (!room.startsWith(namespace + '#')) {
+                    response.rooms.push(room);
                 }
-            }
+            });
         }
         
         res.send(response)

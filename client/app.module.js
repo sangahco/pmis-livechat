@@ -40,11 +40,8 @@
     
     app.controller("AppController", ['$log', function($log){
         var $ctrl = this;
-        
-        $ctrl.applicationName = 'PMIS Live Chat';
-        // init for top menu
-        $ctrl.menu = '1';
 
+        $ctrl.applicationName = 'PMIS Live Chat';
     }]);
 
     app.run(function ($rootScope,$timeout) {
