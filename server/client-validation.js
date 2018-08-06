@@ -33,9 +33,27 @@ if (config.client.authentication.enabled) {
                 console.error(`Got error: ${e.message}`);
                 reject({ error: `Got error: ${e.message}` });
             });
-            req.end();
         });
     }
 } else {
     exports.validateClient = () => { return new Promise((resolve) => resolve())};
+}
+
+module.exports.retrieveClientProfile = function(token) {
+    return new Promise((resolve, reject) => {
+        const req = request(config.client.profile.endpoint, {
+            json: true,
+            headers: {
+                'Authorization': 'Token ' + token
+            }
+        }, (err, res, body) => {
+            if (body && body.data) {
+                resolve(body.data);
+            }
+            resolve({});
+        }).on('error', (e) => {
+            console.error(`Got error: ${e.message}`);
+            reject({ error: `Got error: ${e.message}` });
+        });
+    });
 }

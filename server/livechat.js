@@ -69,11 +69,12 @@ var handleMessage = function(name, text, room) {
 
 chat.on('connection', (socket) => {
     clientAuth.validateClient(socket.handshake.query.token)
-    .then(function(){
+    .then(async function(){
         
         logger.log('info', socket.id + ' connected');
 
-        socket.user = socket.user || socket.handshake.query.user || 'Guest#' + randomID(5);
+        let clientProfile = await clientAuth.retrieveClientProfile(socket.handshake.query.token);
+        socket.user = clientProfile.userName || socket.user || socket.handshake.query.user || 'Guest#' + randomID(5);
 
         socket.on('chat message', (data) => {
             handleMessage(socket.user, data.msg, data.room);

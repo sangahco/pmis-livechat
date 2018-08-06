@@ -8,9 +8,12 @@ const config = {
         webroot: process.env.SERVER_WEBROOT || '/livechat'
     },
     client: {
+        profile: {
+            endpoint: process.env.CLIENT_PROFILE_ENDPOINT || 'http://127.0.0.1'
+        },
         authentication: {
             enabled: (process.env.CLIENT_AUTH_ENABLED == 'true') || false,
-            endpoint: process.env.CLIENT_AUTH_ENDPOINT || 'http://127.0.0.1/',
+            endpoint: process.env.CLIENT_AUTH_ENDPOINT || 'http://127.0.0.1',
         }
     }
 };
