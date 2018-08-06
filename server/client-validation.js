@@ -1,8 +1,10 @@
 const request = require('request');
 const config = require('./config.js');
 
+module.exports.validateClient = () => { return new Promise((resolve) => resolve())};
+
 if (config.client.authentication.enabled) {
-    exports.validateClient = (token) => {
+    module.exports.validateClient = (token) => {
         return new Promise((resolve, reject) => {
             const req = request(config.client.authentication.endpoint, {
                 method: 'POST',
@@ -35,25 +37,29 @@ if (config.client.authentication.enabled) {
             });
         });
     }
-} else {
-    exports.validateClient = () => { return new Promise((resolve) => resolve())};
 }
 
 module.exports.retrieveClientProfile = function(token) {
     return new Promise((resolve, reject) => {
-        const req = request(config.client.profile.endpoint, {
-            json: true,
-            headers: {
-                'Authorization': 'Token ' + token
-            }
-        }, (err, res, body) => {
-            if (body && body.data) {
-                resolve(body.data);
-            }
+        if (config.client.profile.endpoint) {
+            const req = request(config.client.profile.endpoint, {
+                json: true,
+                headers: {
+                    'Authorization': 'Token ' + token
+                }
+            }, (err, res, body) => {
+                if (body && body.data) {
+                    resolve(body.data);
+                }
+                resolve({});
+            }).on('error', (e) => {
+                console.error(`Got error: ${e.message}`);
+                //reject({ error: `Got error: ${e.message}` });
+                resolve({});
+            });
+        }
+        else {
             resolve({});
-        }).on('error', (e) => {
-            console.error(`Got error: ${e.message}`);
-            reject({ error: `Got error: ${e.message}` });
-        });
+        }
     });
 }

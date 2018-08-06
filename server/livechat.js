@@ -132,6 +132,9 @@ chat.on('connection', (socket) => {
         });
 
         socket.emit('validated');
+    }, () => {
+        // invalid nothing to do here
+        // but leave this callback since we have to catch the rejected status
     });
 });
 

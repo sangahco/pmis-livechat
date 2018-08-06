@@ -9,10 +9,10 @@ const config = {
     },
     client: {
         profile: {
-            endpoint: process.env.CLIENT_PROFILE_ENDPOINT || 'http://127.0.0.1'
+            endpoint: process.env.CLIENT_PROFILE_ENDPOINT || ''
         },
         authentication: {
-            enabled: (process.env.CLIENT_AUTH_ENABLED == 'true') || false,
+            enabled: (process.env.CLIENT_AUTH_ENABLED == 'true') || true,
             endpoint: process.env.CLIENT_AUTH_ENDPOINT || 'http://127.0.0.1',
         }
     }
