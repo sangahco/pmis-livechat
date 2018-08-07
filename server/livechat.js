@@ -20,7 +20,6 @@ const dataStore = new Store('dataStore', { path: 'data.json' });
 
 module.exports.sendGlobalMessage = function(text) {
     let message = new Message(text, config.server.name);
-    console.log(message);
     chat.emit('chat message', null, message);
 }
 
@@ -137,8 +136,6 @@ chat.on('connection', (socket) => {
         // but leave this callback since we have to catch the rejected status
     });
 });
-
-logger.info(JSON.stringify(config));
 
 server.listen(config.server.port, config.server.host, function(){
     logger.log('info', 'listening on ' + config.server.host + ':' + config.server.port);

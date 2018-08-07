@@ -41,7 +41,6 @@ if (config.client.authentication.enabled) {
 
 module.exports.retrieveClientProfile = function(token) {
     return new Promise((resolve, reject) => {
-        console.log(config.client.profile.endpoint);
         if (config.client.profile.endpoint) {
             const req = request(config.client.profile.endpoint, {
                 json: true,
@@ -49,7 +48,6 @@ module.exports.retrieveClientProfile = function(token) {
                     'Authorization': 'Token ' + token
                 }
             }, (err, res, body) => {
-                console.log(body);
                 if (body && body.data) {
                     resolve(body.data);
                 }

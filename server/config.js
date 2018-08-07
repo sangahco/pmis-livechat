@@ -1,4 +1,4 @@
-//const config = require('./config.json');
+const logger = require('./logger');
 
 const config = {
     server: {
@@ -12,7 +12,7 @@ const config = {
             endpoint: process.env.CLIENT_PROFILE_ENDPOINT || ''
         },
         authentication: {
-            enabled: (process.env.CLIENT_AUTH_ENABLED == 'true') || true,
+            enabled: (process.env.CLIENT_AUTH_ENABLED == 'true') || false,
             endpoint: process.env.CLIENT_AUTH_ENDPOINT || 'http://127.0.0.1',
         }
     }
@@ -20,6 +20,7 @@ const config = {
 
 module.exports = config;
 
+logger.info(JSON.stringify(config));
 
 // process.argv.forEach(function (val, index, array) {
 //     console.log(index + ': ' + val);
