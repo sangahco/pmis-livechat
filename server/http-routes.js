@@ -73,12 +73,13 @@ module.exports = function(app, io){
                 let sockets = Object.keys(chat.adapter.rooms[roomName].sockets);
                 sockets.forEach((socketID) => {
                     let socket = chat.sockets[socketID];
-                    room.clients.push(socket.user);
+                    let clientProfile = livechat.loadClientProfile(socket.clientID);
+                    room.clients.push(clientProfile.name);
                 });
                 response.rooms.push(room);
             }
         }
-        res.send(response);
+        res.json(response);
     });
 
     app.get(config.server.webroot + '/room/:room', requireLogin, function(req, res){
@@ -89,11 +90,11 @@ module.exports = function(app, io){
         for (let socketID in chat.connected) {
             let socket = chat.connected[socketID]
             let requestedRoom = req.params.room || 'global';
-            
+            let clientProfile = livechat.loadClientProfile(socket.clientID);
             if (Object.keys(socket.rooms).includes(req.params.room)) {
                 clients.push({
-                    id: socket.id,
-                    user: socket.user
+                    id: clientProfile.clientID,
+                    user: clientProfile.name
                 });
             }
         }
@@ -110,19 +111,22 @@ module.exports = function(app, io){
         
         let response = {};
 
-        let socket = chat.sockets[namespace + '#' + req.params.client];
-        if (socket) {
+        let clientProfile = livechat.loadClientProfile(req.params.client);
+        if (clientProfile) {
             response = {
                 rooms: [],
-                user: socket.user,
-                id: socket.id
+                user: clientProfile.name,
+                id: clientProfile.clientID
             };
 
-            Object.keys(socket.rooms).forEach((room) => {
-                if (!room.startsWith(namespace + '#')) {
-                    response.rooms.push(room);
-                }
-            });
+            let socket = chat.sockets[clientProfile.socketID];
+            if (socket) {
+                Object.keys(socket.rooms).forEach((room) => {
+                    if (!room.startsWith(namespace + '#')) {
+                        response.rooms.push(room);
+                    }
+                });
+            }
         }
         
         res.send(response)

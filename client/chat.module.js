@@ -7,9 +7,9 @@
 
     app.service("chatService", ['$log', '$routeParams', '$q', 'HttpRequestService', 'notificationService', 
     function($log, $routeParams, $q, httpRequest, notificationService){
-        var socket;
+        var clientID;
 
-        socket = io.connect(host + '/chat', {
+        var socket = io.connect(host + '/chat', {
             path: path + '/ws',
             query: {
                 token: $routeParams.token || '',
@@ -22,9 +22,10 @@
         });
 
         var deferValidated = $q.defer();
-        socket.on('validated', function(){
+        socket.on('validated', function(data){
             $log.log('client connected');
             deferValidated.resolve();
+            clientID = data.clientID;
         });
 
         socket.on('disconnect', function() {
@@ -76,14 +77,11 @@
             },
 
             findMyRooms: () => {
-                if (socket.id) {
-                    let clientID = socket.id.substring(socket.id.lastIndexOf('#') + 1);
-                    return httpRequest.request({
-                        url: host + path + "/client/" + clientID
-                    }).then(( response ) => {
-                        return response.data;
-                    });
-                }
+                return httpRequest.request({
+                    url: host + path + "/client/" + clientID
+                }).then(( response ) => {
+                    return response.data;
+                });
                 return $q.defer().promise;
             },
 
