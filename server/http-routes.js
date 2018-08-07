@@ -3,7 +3,6 @@ const config = require('./config.js');
 const clientAuth = require('./client-validation')
 //const firebaseAdmin = require('./firebase-admin');
 const livechat = require('./livechat');
-const namespace = '/chat';
 const session = require('client-sessions');
 const path = require('path');
 
@@ -64,7 +63,7 @@ module.exports = function(app, io){
         let rooms = Object.keys(chat.adapter.rooms);
         for (var i = 0; i < rooms.length; i++) {
             let roomName = rooms[i];
-            if (!roomName.startsWith(namespace + '#')) {
+            if (!roomName.startsWith(livechat.namespace + '#')) {
                 let room = {
                     name: roomName,
                     clients: []
@@ -122,7 +121,7 @@ module.exports = function(app, io){
             let socket = chat.sockets[clientProfile.socketID];
             if (socket) {
                 Object.keys(socket.rooms).forEach((room) => {
-                    if (!room.startsWith(namespace + '#')) {
+                    if (!room.startsWith(livechat.namespace + '#')) {
                         response.rooms.push(room);
                     }
                 });

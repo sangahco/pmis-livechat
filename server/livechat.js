@@ -7,13 +7,16 @@ const randomID = require('random-id');
 const config = require('./config');
 const clientAuth = require('./client-validation')
 const io = require('socket.io')(server, { path: config.server.webroot + '/ws' });
-const chat = io.of('/chat');
 const logger = require('./logger');
 const Message = require('./message');
 const session = require('client-sessions');
 const botProfile = require('./bot-profile');
 const dataStore = new Store('dataStore', { path: 'data.json' });
 //dataStore.clear();
+
+const namespace = '/chat';
+module.exports.namespace = namespace;
+const chat = io.of(namespace);
 require('./http-routes')(app, chat);
 
 module.exports.sendGlobalMessage = function(text) {
