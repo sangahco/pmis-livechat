@@ -18,16 +18,16 @@
         });
 
         socket.on('notification', function(data){
-            notificationService.notifyMe(data.msg);
+            notificationService.notifyMe(data.text);
         });
 
         var deferValidated = $q.defer();
-        socket.on('validated', function(msg){
+        socket.on('validated', function(){
             $log.log('client connected');
             deferValidated.resolve();
         });
 
-        socket.on('disconnect', function(msg) {
+        socket.on('disconnect', function() {
             $log.log('client disconnected');
             deferValidated = $q.defer();
         });

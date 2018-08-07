@@ -13,8 +13,6 @@ const Message = require('./message');
 require('./http-routes')(app, chat);
 const session = require('client-sessions');
 
-
-
 const dataStore = new Store('dataStore', { path: 'data.json' });
 //dataStore.clear();
 
@@ -32,10 +30,20 @@ var storeMessage = function(message, room){
     dataStore.set('rooms', rooms);
     let messages = dataStore.get('rooms.' + room + '.messages') || {};
     dataStore.set('rooms.' + room + '.messages', messages);
-
-    //messages[message.id] = message;
     dataStore.set('rooms.' + room + '.messages.' + message.id, message);
-    //messages[randomID(16)] = { name: user, text: message, time: new Date(), profilePicUrl: '' };
+}
+
+var storeClientProfile = function(id, name, profilePicUrl) {
+    let clients = dataStore.get('clients') || {};
+    dataStore.set('clients', clients);
+    dataStore.set('clients.' + id, {
+        name: name,
+        profilePicUrl: profilePicUrl
+    });
+}
+
+var loadClientProfile = function(id) {
+    return dataStore.get('clients.' + id);
 }
 
 module.exports.loadMessages = function(room){
@@ -73,7 +81,7 @@ chat.on('connection', (socket) => {
         logger.log('info', socket.id + ' connected');
 
         let clientProfile = await clientAuth.retrieveClientProfile(socket.handshake.query.token);
-        socket.user = clientProfile.userName || socket.user || socket.handshake.query.user || 'Guest#' + randomID(5);
+        socket.user = clientProfile.userName || socket.handshake.query.user || 'Guest#' + randomID(5);
 
         socket.on('chat message', (data) => {
             handleMessage(socket.user, data.msg, data.room);
@@ -86,12 +94,7 @@ chat.on('connection', (socket) => {
             for (var i = 0; i < rooms.length; i++) {
                 handleMessage(config.server.name, socket.user + ' has left the chat', rooms[i]);
             }
-
-            socket.broadcast.emit('notification', {
-                user: socket.user,
-                time: new Date(),
-                msg: socket.user + ' has left the chat'
-            });
+            socket.broadcast.emit('notification', new Message(socket.user + ' has left the chat', socket.user));
         });
 
         socket.on('disconnect', () => {
@@ -104,15 +107,7 @@ chat.on('connection', (socket) => {
             socket.join(room, () => {
                 logger.log('info', socket.id + ' has joined the chat ' + room)
                 handleMessage(config.server.name, socket.user + ' has joined the chat', room);
-
-                // send a callback to the client with the room joined
-                //chat.to(socket.id).emit('joined', room, { rooms: Object.keys(socket.rooms) });
-
-                socket.broadcast.to(room).emit('notification', {
-                    user: socket.user,
-                    time: new Date(),
-                    msg: socket.user + ' has joined the chat'
-                });
+                socket.broadcast.to(room).emit('notification', new Message(socket.user + ' has joined the chat', socket.user));
 
             });
         });
@@ -122,11 +117,7 @@ chat.on('connection', (socket) => {
             if (rooms.includes(data.room)){
                 socket.leave(data.room);
                 handleMessage(config.server.name, socket.user + ' has left the chat', data.room);
-                socket.broadcast.emit('notification', {
-                    user: socket.user,
-                    time: new Date(),
-                    msg: socket.user + ' has left the chat'
-                });
+                socket.broadcast.emit('notification', new Message(socket.user + ' has left the chat', socket.user));
             }
         });
 
