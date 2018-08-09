@@ -39,7 +39,7 @@
             <div class="mdl-card__supporting-text mdl-color-text--grey-600">
             <div class="messages">
                 <span class="message-filler"></span>
-                <message ng-repeat="message in $ctrl.messages track by $index" whom="message.name" ></message>
+                <message ng-repeat="message in $ctrl.messages track by $index" client-name="message.name" ></message>
             </div>
 
             <!-- chat form -->
@@ -67,18 +67,18 @@
     </div>
 
     <!-- right panel with members and rooms list -->
-    <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
+    <div class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--4-col-phone mdl-cell--stretch">
         <div class="right-panel-list-container mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
             <div class="mdl-tabs__tab-bar">
                 <a ng-href="#{{$ctrl.roomName}}-members-panel" class="mdl-tabs__tab is-active">{{$ctrl.clients.length}} Members</a>
                 <!-- <a ng-href="#{{$ctrl.roomName}}-rooms-panel" class="mdl-tabs__tab" >{{$ctrl.publicRooms.length}} Rooms</a> -->
             </div>
             <div class="mdl-tabs__panel is-active" id="{{$ctrl.roomName}}-members-panel">
-                <ul class="demo-list-item mdl-list">
+                <ul class="mdl-list" >
                     <li class="mdl-list__item" ng-repeat="client in $ctrl.clients">
                         <span class="mdl-list__item-primary-content">
-                        <i style="color:rgb(0, 139, 12);" class="material-icons mdl-list__item-icon">person</i>
-                        {{client.user}} (online)
+                        <i class="material-icons mdl-list__item-icon">person</i>
+                        {{client.user}}
                         </span>
                     </li>
                 </ul>
@@ -100,6 +100,12 @@
         <div class="mdl-layout-spacer"></div>
         <div>
             <form>
+                <!-- <div class="mdl-textfield mdl-js-textfield">
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-2">
+                        <input type="checkbox" id="switch-2" class="mdl-switch__input">
+                        <span class="mdl-switch__label">Private Room</span>
+                    </label>
+                </div> -->
                 <button type="button" ng-click="$ctrl.leaveRoom($ctrl.roomName)" 
                 class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" title="Leave the room">
                 Leave Room

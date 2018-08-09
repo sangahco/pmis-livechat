@@ -82,7 +82,6 @@
                 }).then(( response ) => {
                     return response.data;
                 });
-                return $q.defer().promise;
             },
 
             findPublicRooms: () => {

@@ -12,7 +12,7 @@
                 // Let's check if the browser supports notifications
                 
                 let options = {
-                    icon: 'noti-icon.png'
+                    icon: 'images/noti-icon.png'
                 };
 
                 if (!("Notification" in window)) {
