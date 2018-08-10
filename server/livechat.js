@@ -9,19 +9,28 @@ const clientAuth = require('./client-validation')
 const io = require('socket.io')(server, { path: config.server.webroot + '/ws' });
 const logger = require('./logger');
 const Message = require('./message');
+const Room = require('./room');
 const session = require('client-sessions');
 const botProfile = require('./bot-profile');
 const dataStore = new Store('dataStore', { path: 'data.json' });
 //dataStore.clear();
 
 const namespace = '/chat';
-module.exports.namespace = namespace;
 const chat = io.of(namespace);
-require('./http-routes')(app, chat);
 
-module.exports.sendGlobalMessage = function(text) {
+var sendGlobalMessage = function(text) {
     let message = new Message(text, config.server.name);
     chat.emit('chat message', null, message);
+}
+
+var storeRoom = function(room){
+    dataStore.set('rooms.' + room.roomID + '.settings', room.settings);
+}
+
+var loadRoom = function(roomID){
+    let storedSettings = dataStore.get('rooms.' + roomID + '.settings');
+    let roomObj = new Room(roomID, storedSettings);
+    return roomObj;
 }
 
 var sendMessage = function(message, room) {
@@ -29,8 +38,6 @@ var sendMessage = function(message, room) {
 }
 
 var storeMessage = function(message, room){
-    let rooms = dataStore.get('rooms') || {};
-    dataStore.set('rooms', rooms);
     let messages = dataStore.get('rooms.' + room + '.messages') || {};
     dataStore.set('rooms.' + room + '.messages', messages);
     dataStore.set('rooms.' + room + '.messages.' + message.id, message);
@@ -50,11 +57,11 @@ var storeClientProfile = function(name, profilePicUrl, socket) {
     return profile;
 }
 
-module.exports.loadClientProfile = function(id) {
+var loadClientProfile = function(id) {
     return dataStore.get('clients.' + id);
 }
 
-module.exports.loadMessages = function(room){
+var loadMessages = function(room){
     let messages = dataStore.get('rooms.' + room + '.messages');
     return messages;
 }
@@ -144,6 +151,17 @@ chat.on('connection', (socket) => {
         // but leave this callback since we have to catch the rejected status
     });
 });
+
+module.exports = {
+    loadRoom: loadRoom,
+    storeRoom: storeRoom,
+    namespace: namespace,
+    sendGlobalMessage: sendGlobalMessage,
+    loadMessages: loadMessages,
+    loadClientProfile: loadClientProfile
+};
+
+require('./http-routes')(app, chat);
 
 server.listen(config.server.port, config.server.host, function(){
     logger.log('info', 'listening on ' + config.server.host + ':' + config.server.port);

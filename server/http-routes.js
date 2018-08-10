@@ -5,6 +5,7 @@ const clientAuth = require('./client-validation')
 const livechat = require('./livechat');
 const session = require('client-sessions');
 const path = require('path');
+const bodyParser = require('body-parser');
 
 var requireLogin = function(req, res, next) {
     if (req.session && req.session.status == 'ok') {
@@ -24,6 +25,8 @@ var requireLogin = function(req, res, next) {
 
 module.exports = function(app, io){
     let chat = io;
+
+    app.use(bodyParser.json()); // for parsing application/json
 
     app.use(session({
         cookieName: 'session',
@@ -51,7 +54,8 @@ module.exports = function(app, io){
 
     app.get(config.server.webroot + '/global/:message', requireLogin, function (req, res){
         livechat.sendGlobalMessage(req.params.message || 'This is a global message!');
-        res.send('OK!')
+        
+        res.json({status: 'OK!'});
     });
 
     app.get(config.server.webroot + '/rooms', requireLogin, function (req, res){
@@ -60,16 +64,11 @@ module.exports = function(app, io){
 
         let response = { rooms: [] };
 
-        let rooms = Object.keys(chat.adapter.rooms);
-        for (var i = 0; i < rooms.length; i++) {
-            let roomName = rooms[i];
-            if (!roomName.startsWith(livechat.namespace + '#')) {
-                let room = {
-                    name: roomName,
-                    clients: []
-                };
+        Object.keys(chat.adapter.rooms).forEach((roomID) => {
+            if (!roomID.startsWith(livechat.namespace + '#')) {
+                let room = livechat.loadRoom(roomID);
                 
-                let sockets = Object.keys(chat.adapter.rooms[roomName].sockets);
+                let sockets = Object.keys(chat.adapter.rooms[roomID].sockets);
                 sockets.forEach((socketID) => {
                     let socket = chat.sockets[socketID];
                     let clientProfile = livechat.loadClientProfile(socket.clientID);
@@ -77,11 +76,21 @@ module.exports = function(app, io){
                 });
                 response.rooms.push(room);
             }
-        }
+        });
         res.json(response);
     });
 
-    app.get(config.server.webroot + '/room/:room', requireLogin, function(req, res){
+    app.get(config.server.webroot + '/room/:room/messages', requireLogin, function(req, res){
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+
+        let messages = livechat.loadMessages(req.params.room);
+        let response = {messages: messages};
+
+        res.send(response);
+    });
+
+    app.get(config.server.webroot + '/room/:room/clients', requireLogin, function(req, res){
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
@@ -98,10 +107,30 @@ module.exports = function(app, io){
             }
         }
 
-        let messages = livechat.loadMessages(req.params.room);
-        let response = { clients: clients, messages: messages };
+        let response = { clients: clients };
 
         res.send(response);
+    });
+
+    app.get(config.server.webroot + '/room/:room/settings', requireLogin, function(req, res){
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+
+        let room = livechat.loadRoom(req.params.room);
+        let response = { settings: room.settings };
+
+        res.send(response);
+    });
+
+    app.post(config.server.webroot + '/room/:room', requireLogin, function(req, res){
+        console.log(req.body);
+        let room = livechat.loadRoom(req.param.room);
+        
+        room.setUnlisted(req.body.unlisted);
+        room.setRoomName(req.body.roomName);
+        livechat.storeRoom(room);
+
+        res.json({status: 'OK!'});
     });
 
     app.get(config.server.webroot + '/client/:client', requireLogin, function(req, res){

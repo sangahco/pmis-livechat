@@ -49,6 +49,7 @@
         $ctrl.roomName = $ctrl.roomName || 'global';
         $ctrl.clients = [];
         $ctrl.unreadCount = 0;
+        $ctrl.settings = {};
 
         var chatMessageCallback = function(room, message){
             if (!room || $ctrl.roomName === room) {
@@ -93,6 +94,17 @@
         }
 
         $scope.$watch('$ctrl.roomName', loadMessages);
+
+        $scope.$watch('$ctrl.showSettings', async (newVal, oldVal) => {
+            $log.log(newVal);
+            if (newVal == true) {
+                $ctrl.settings = await chatService.loadSettings($ctrl.roomName);
+                $log.log($ctrl.settings);
+                $scope.$digest();
+            } else {
+                chatService.saveRoomSettings($ctrl.settings, $ctrl.roomName);
+            }
+        });
 
         $scope.$watch('$ctrl.active', (newVal, oldVal) => {
             if (newVal) $ctrl.unreadCount = 0;

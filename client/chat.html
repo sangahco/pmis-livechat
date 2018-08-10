@@ -32,7 +32,28 @@
 </style>
 
 <div class="mdl-grid chat-container">
-    <div class="messages-card-container mdl-cell mdl-cell--9-col mdl-cell--8-col-tablet mdl-cell--4-col-phone">
+    <div ng-show="$ctrl.showSettings" class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--9-col mdl-cell--8-col-tablet mdl-cell--4-col-phone">
+        <div class="mdl-card__supporting-text">
+            <h6>Settings</h6>
+            <hr/>
+            <label>
+                <input type="checkbox" ng-model="$ctrl.settings.unlisted" >
+                Unlisted Room
+            </label>
+            <!-- <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="{{$ctrl.roomName}}-private-chat-input">
+                <input ng-model="$ctrl.settings.unlisted" type="checkbox" id="{{$ctrl.roomName}}-private-chat-input" class="mdl-switch__input">
+                <span class="mdl-switch__label">Unlisted Room {{$ctrl.settings.unlisted}}</span>
+            </label> -->
+        </div>
+        <div class="mdl-card__actions mdl-card--border" style="text-align: right;">
+            <button type="button" class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect"
+            ng-click="$ctrl.showSettings = false">
+            CLOSE
+            </button>
+        </div>
+    </div>
+    <div class="messages-card-container mdl-cell mdl-cell--9-col mdl-cell--8-col-tablet mdl-cell--4-col-phone"
+    ng-hide="$ctrl.showSettings">
 
         <!-- Messages container -->
         <div class="messages-card mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
@@ -109,6 +130,10 @@
                 <button type="button" ng-click="$ctrl.leaveRoom($ctrl.roomName)" 
                 class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" title="Leave the room">
                 Leave Room
+                </button>
+                <button class="mdl-button mdl-js-button mdl-button--icon"
+                ng-click="$ctrl.showSettings = true">
+                    <i class="material-icons">settings</i>
                 </button>
             </form>
         </div>

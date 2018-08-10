@@ -60,17 +60,34 @@
                 });
             },
 
+            saveRoomSettings: (settings, room) => {
+                return httpRequest.request({
+                    url: host + path + "/room/" + room,
+                    method: 'POST',
+                    data: settings
+                }).then((response) => {
+                });
+            },
+
             loadMessages: (room) => {
                 return httpRequest.request({
-                    url: host + path + "/room/" + room
+                    url: host + path + "/room/" + room + "/messages"
                 }).then((response) => {
                     return response.data.messages || {};
                 });
             },
 
+            loadSettings: (room) => {
+                return httpRequest.request({
+                    url: host + path + "/room/" + room + "/settings"
+                }).then((response) => {
+                    return response.data.settings || {};
+                });
+            },
+
             findClients: (room) => {
                 return httpRequest.request({
-                    url: host + path + "/room/" + room
+                    url: host + path + "/room/" + room + "/clients"
                 }).then(( response ) => {
                     return response.data.clients;
                 });
