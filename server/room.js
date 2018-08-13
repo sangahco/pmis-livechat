@@ -1,22 +1,24 @@
 const config = require('./config');
 
-function Room(roomName, settings) {
-    let room = {
-        name: roomName,
-        roomID: roomName,
-        settings: settings || config.room.default,
-        clients: [],
-        setUnlisted: (unlisted) => {
-            if (unlisted != null) {
-                room.settings.unlisted = !!unlisted;
-            }
-        },
-        setRoomName: (name) => {
-            name && (room.settings.roomName = name);
-        }
-    };
+class Room {
+    constructor(roomName, settings, clients) {
+        this.name = roomName;
+        this.roomID = roomName;
+        this.settings = settings || {
+            unlisted: config.room.default.unlisted
+        };
+        this.clients = clients || [];
+    }
 
-    return room;
+    setUnlisted(unlisted) {
+        if (unlisted != null) {
+            this.settings.unlisted = !!unlisted;
+        }
+    }
+
+    setRoomName(name) {
+        name && (this.settings.roomName = name);
+    }
 }
 
 module.exports = Room;

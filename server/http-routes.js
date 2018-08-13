@@ -64,16 +64,10 @@ module.exports = function(app, io){
 
         let response = { rooms: [] };
 
-        Object.keys(chat.adapter.rooms).forEach((roomID) => {
-            if (!roomID.startsWith(livechat.namespace + '#')) {
-                let room = livechat.loadRoom(roomID);
-                
-                let sockets = Object.keys(chat.adapter.rooms[roomID].sockets);
-                sockets.forEach((socketID) => {
-                    let socket = chat.sockets[socketID];
-                    let clientProfile = livechat.loadClientProfile(socket.clientID);
-                    room.clients.push(clientProfile.name);
-                });
+        Object.keys(livechat.loadRooms()).forEach((roomID) => {
+            let room = livechat.loadRoom(roomID);
+            if (roomID.startsWith(livechat.namespace + '#') || room.settings.unlisted) {
+            } else {
                 response.rooms.push(room);
             }
         });
@@ -116,20 +110,22 @@ module.exports = function(app, io){
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
+        let response = {};
         let room = livechat.loadRoom(req.params.room);
-        let response = { settings: room.settings };
-
+        if (room) {
+            response = { settings: room.settings };
+        }
         res.send(response);
     });
 
     app.post(config.server.webroot + '/room/:room', requireLogin, function(req, res){
-        console.log(req.body);
-        let room = livechat.loadRoom(req.param.room);
+        let room = livechat.loadRoom(req.params.room);
+        if (room) {
+            room.setUnlisted(req.body.unlisted);
+            room.setRoomName(req.body.roomName);
+            livechat.storeRoom(room);
+        }
         
-        room.setUnlisted(req.body.unlisted);
-        room.setRoomName(req.body.roomName);
-        livechat.storeRoom(room);
-
         res.json({status: 'OK!'});
     });
 

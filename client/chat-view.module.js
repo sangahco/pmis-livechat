@@ -94,18 +94,17 @@
         }
 
         $scope.$watch('$ctrl.roomName', loadMessages);
-
         $scope.$watch('$ctrl.showSettings', async (newVal, oldVal) => {
-            $log.log(newVal);
             if (newVal == true) {
                 $ctrl.settings = await chatService.loadSettings($ctrl.roomName);
-                $log.log($ctrl.settings);
                 $scope.$digest();
-            } else {
-                chatService.saveRoomSettings($ctrl.settings, $ctrl.roomName);
             }
         });
-
+        $scope.$watch('$ctrl.settings', () => {
+            if ($ctrl.roomName) {
+                chatService.saveRoomSettings($ctrl.settings, $ctrl.roomName);
+            }
+        }, true /* objectEquality */ );
         $scope.$watch('$ctrl.active', (newVal, oldVal) => {
             if (newVal) $ctrl.unreadCount = 0;
             $ctrl.setUnreadCount($ctrl.roomName, $ctrl.unreadCount);

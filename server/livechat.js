@@ -25,11 +25,16 @@ var sendGlobalMessage = function(text) {
 
 var storeRoom = function(room){
     dataStore.set('rooms.' + room.roomID + '.settings', room.settings);
+    dataStore.set('rooms.' + room.roomID + '.clients', room.clients);
 }
 
 var loadRoom = function(roomID){
-    let storedSettings = dataStore.get('rooms.' + roomID + '.settings');
-    let roomObj = new Room(roomID, storedSettings);
+    let roomObj;
+    if (dataStore.hasOwn('rooms.' + roomID)) {
+        let storedSettings = dataStore.get('rooms.' + roomID + '.settings');
+        let storedClients = dataStore.get('rooms.' + roomID + '.clients');
+        roomObj = new Room(roomID, storedSettings, storedClients);
+    }
     return roomObj;
 }
 
@@ -66,6 +71,11 @@ var loadMessages = function(room){
     return messages;
 }
 
+var loadRooms = function() {
+    let rooms = dataStore.get('rooms');
+    return rooms;
+}
+
 var cleanStorage = function(){
     let rooms = chat.adapter.rooms;
     let storedRooms = dataStore.get('rooms');
@@ -89,6 +99,26 @@ var cleanStorage = function(){
     });
     dataStore.set('clients', storedClients);
 }
+
+var updateRoomClients = function() {
+    logger.info('Refreshing rooms clients...');
+    Object.keys(loadRooms()).forEach(roomID => {
+        let room = loadRoom(roomID);
+        room.clients = [];
+
+        let chatAdapterRoom = chat.adapter.rooms[roomID];
+        if (chatAdapterRoom) {
+            let sockets = Object.keys(chatAdapterRoom.sockets);
+            sockets.forEach((socketID) => {
+                let socket = chat.sockets[socketID];
+                let clientProfile = loadClientProfile(socket.clientID);
+                room.clients.push(clientProfile);
+            });
+        }
+        storeRoom(room);
+    });
+}
+setInterval(updateRoomClients, 5000);
 
 var handleMessage = function(text, clientProfile, room) {
     let message = new Message(text, clientProfile.name, clientProfile.profilePicUrl);
@@ -158,6 +188,7 @@ module.exports = {
     namespace: namespace,
     sendGlobalMessage: sendGlobalMessage,
     loadMessages: loadMessages,
+    loadRooms: loadRooms,
     loadClientProfile: loadClientProfile
 };
 
