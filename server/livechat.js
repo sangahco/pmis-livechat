@@ -101,7 +101,7 @@ var cleanStorage = function(){
 }
 
 var updateRoomClients = function() {
-    logger.info('Refreshing rooms clients...');
+    //logger.info('Refreshing rooms clients...');
     Object.keys(loadRooms()).forEach(roomID => {
         let room = loadRoom(roomID);
         room.clients = [];
