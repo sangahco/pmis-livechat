@@ -68,12 +68,12 @@ var loadClientProfile = function(id) {
 
 var loadMessages = function(room){
     let messages = dataStore.get('rooms.' + room + '.messages');
-    return messages;
+    return messages || {};
 }
 
 var loadRooms = function() {
     let rooms = dataStore.get('rooms');
-    return rooms;
+    return rooms || {};
 }
 
 var cleanStorage = function(){

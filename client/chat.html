@@ -36,12 +36,8 @@
         <div class="mdl-card__supporting-text">
             <h6>Settings</h6>
             <hr/>
-            <!-- <label>
-                <input type="checkbox" ng-model="$ctrl.settings.unlisted" >
-                Unlisted Room
-            </label> -->
-            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect ng-class:{ 'is-checked': $ctrl.settings.unlisted }" for="{{$ctrl.roomName}}-private-chat-input">
-                <input ng-model="$ctrl.settings.unlisted" type="checkbox" id="{{$ctrl.roomName}}-private-chat-input" class="mdl-switch__input" >
+            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect ng-class:{ 'is-checked': $ctrl.settings.unlisted }" for="{{$ctrl.roomName}}-unlisted-room">
+                <input ng-model="$ctrl.settings.unlisted" type="checkbox" id="{{$ctrl.roomName}}-unlisted-room" class="mdl-switch__input" >
                 <span class="mdl-switch__label">
                     <i class="material-icons">visibility_off</i>
                     <span style="vertical-align: top;">Unlisted Room</span>
