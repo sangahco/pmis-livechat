@@ -5,7 +5,7 @@ const config = {
         host: process.env.SERVER_HOST || '0.0.0.0',
         port: process.env.SERVER_PORT || 3000,
         name: process.env.SERVER_NAME || 'LiveChat',
-        webroot: process.env.SERVER_WEBROOT || '/livechat'
+        webroot: process.env.SERVER_WEBROOT || ''
     },
     client: {
         profile: {

@@ -1,0 +1,9 @@
+version: "2"
+
+services:
+
+  livechat:
+    #build: .
+    image: sangah/livechat
+    ports: 
+    - "${HTTP_PORT}:3000"
