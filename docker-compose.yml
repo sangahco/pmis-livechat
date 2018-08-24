@@ -7,3 +7,10 @@ services:
     image: sangah/livechat
     ports: 
     - "${HTTP_PORT}:3000"
+    - SERVER_WEBROOT
+    logging: 
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    restart: "unless-stopped"
