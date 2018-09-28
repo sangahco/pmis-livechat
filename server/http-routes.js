@@ -23,6 +23,13 @@ var requireLogin = function(req, res, next) {
     }
 }
 
+var allowCrossOrigin = function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With, content-type");
+
+    next();
+}
+
 module.exports = function(app, io){
     let chat = io;
 
@@ -48,7 +55,7 @@ module.exports = function(app, io){
         res.redirect(config.server.webroot + '/');
     });
 
-    app.get(config.server.webroot + '/login', requireLogin, function(req, res) {
+    app.get(config.server.webroot + '/login', allowCrossOrigin, requireLogin, function(req, res) {
         res.json(req.session);
     });
 
@@ -58,10 +65,7 @@ module.exports = function(app, io){
         res.json({status: 'OK!'});
     });
 
-    app.get(config.server.webroot + '/rooms', requireLogin, function (req, res){
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "X-Requested-With");
-
+    app.get(config.server.webroot + '/rooms', allowCrossOrigin, requireLogin, function (req, res){
         let response = { rooms: [] };
 
         Object.keys(livechat.loadRooms()).forEach((roomID) => {
@@ -74,20 +78,14 @@ module.exports = function(app, io){
         res.json(response);
     });
 
-    app.get(config.server.webroot + '/room/:room/messages', requireLogin, function(req, res){
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "X-Requested-With");
-
+    app.get(config.server.webroot + '/room/:room/messages', allowCrossOrigin, requireLogin, function(req, res){
         let messages = livechat.loadMessages(req.params.room);
         let response = {messages: messages};
 
         res.send(response);
     });
 
-    app.get(config.server.webroot + '/room/:room/clients', requireLogin, function(req, res){
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "X-Requested-With");
-
+    app.get(config.server.webroot + '/room/:room/clients', allowCrossOrigin, requireLogin, function(req, res){
         let clients = [];
         for (let socketID in chat.connected) {
             let socket = chat.connected[socketID]
@@ -106,10 +104,7 @@ module.exports = function(app, io){
         res.send(response);
     });
 
-    app.get(config.server.webroot + '/room/:room/settings', requireLogin, function(req, res){
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "X-Requested-With");
-
+    app.get(config.server.webroot + '/room/:room/settings', allowCrossOrigin, requireLogin, function(req, res){
         let response = {};
         let room = livechat.loadRoom(req.params.room);
         if (room) {
@@ -118,7 +113,7 @@ module.exports = function(app, io){
         res.send(response);
     });
 
-    app.post(config.server.webroot + '/room/:room', requireLogin, function(req, res){
+    app.all(config.server.webroot + '/room/:room', allowCrossOrigin, requireLogin, function(req, res){
         let room = livechat.loadRoom(req.params.room);
         if (room) {
             room.setUnlisted(req.body.unlisted);
@@ -129,10 +124,7 @@ module.exports = function(app, io){
         res.json({status: 'OK!'});
     });
 
-    app.get(config.server.webroot + '/client/:client', requireLogin, function(req, res){
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "X-Requested-With");
-        
+    app.get(config.server.webroot + '/client/:client', allowCrossOrigin, requireLogin, function(req, res){
         let response = {};
 
         let clientProfile = livechat.loadClientProfile(req.params.client);
