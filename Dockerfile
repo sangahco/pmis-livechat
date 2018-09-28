@@ -12,9 +12,7 @@ RUN set -ex && \
     apk add --no-cache --virtual \
       nodejs git && \
     npm install -g pm2 && \
-    npm install -g bower-installer && \
-    npm install && \
-    rm -rf bower_components
+    npm install
 
 EXPOSE 3000 9615
 
