@@ -65,7 +65,7 @@
         socket.on('chat message', chatMessageCallback);
 
         $ctrl.sendMessage = function(msg){
-            msg && chatService.sendMessage(msg, $ctrl.roomName);
+            msg && chatService.saveMessage(msg, $ctrl.roomName);
             $ctrl.message = '';
         }
 
@@ -91,6 +91,15 @@
                 }
             });
             !found && $ctrl.messages.push(message);
+        }
+
+        $scope.fileNameChanged = function (ele) {
+            var files = ele.files;
+            var l = files.length;
+        
+            for (var i = 0; i < l; i++) {
+                chatService.saveImageMessage(files[i], $ctrl.roomName);
+            }
         }
 
         $scope.$watch('$ctrl.roomName', loadMessages);

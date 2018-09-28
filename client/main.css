@@ -28,11 +28,11 @@ main, .messages-card {
     height: calc(100% - 35px);
     padding-bottom: 0;
 }
-.chat-icon.material-icons {
+/* .chat-icon.material-icons {
     font-size: 36px;
     top: 8px;
     position: relative;
-}
+} */
 .messages-card .mdl-card__supporting-text {
     width: auto;
     height: 100%;
@@ -113,7 +113,7 @@ main, .messages-card {
 #message-form .mdl-textfield {
     width: calc(100% - 100px);
 }
-#message-form button, #image-form button {
+#message-form button, #message-form .button, #image-form .button {
     width: 100px;
     margin: 15px 0 0 10px;
 }
@@ -124,48 +124,17 @@ main, .messages-card {
     background: linear-gradient(white, #f9f9f9);
     justify-content: space-between;
 }
-#user-container {
-    position: absolute;
-    display: flex;
-    flex-direction: row;
-    top: 22px;
-    width: 100%;
-    right: 0;
-    padding-left: 10px;
-    justify-content: flex-end;
-    padding-right: 10px;
-}
-#user-container #user-pic {
-    top: -3px;
-    position: relative;
-    display: inline-block;
-    background-image: url('/images/profile_placeholder.png');
-    background-repeat: no-repeat;
-    width: 40px;
-    height: 40px;
-    background-size: 40px;
-    border-radius: 20px;
-}
-#user-container #user-name {
-    font-size: 16px;
-    line-height: 36px;
-    padding-right: 10px;
-    padding-left: 20px;
-}
-#image-form #submitImage {
-    width: auto;
-    padding: 0 6px 0 1px;
-    min-width: 0;
-}
-#image-form #submitImage .material-icons {
-    top: -1px;
-}
 .message img {
     max-width: 300px;
     max-height: 200px;
 }
 #mediaCapture {
     display: none;
+}
+#image-form .submitImage {
+    width: auto;
+    padding: 0 6px 0 6px;
+    min-width: 0;
 }
 /* .mdl-textfield__label:after {
     background-color: #0288D1;

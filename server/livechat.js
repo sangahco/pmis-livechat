@@ -120,8 +120,8 @@ var updateRoomClients = function() {
 }
 setInterval(updateRoomClients, 5000);
 
-var handleMessage = function(text, clientProfile, room) {
-    let message = new Message(text, clientProfile.name, clientProfile.profilePicUrl);
+var handleMessage = function(text, clientProfile, imageUrl, room) {
+    let message = new Message(text, clientProfile.name, clientProfile.profilePicUrl, imageUrl);
 
     sendMessage(message, room);
     storeMessage(message, room);
@@ -139,7 +139,7 @@ chat.on('connection', (socket) => {
         socket.clientID = clientProfile.clientID;
 
         socket.on('chat message', (data) => {
-            handleMessage(data.msg, clientProfile, data.room);
+            handleMessage(data.msg, clientProfile, data.imageUrl, data.room);
         });
 
         socket.on('disconnecting', (reason) => {
@@ -147,7 +147,7 @@ chat.on('connection', (socket) => {
 
             let rooms = Object.keys(socket.rooms);
             for (var i = 0; i < rooms.length; i++) {
-                handleMessage(clientProfile.name + ' has left the chat', botProfile, rooms[i]);
+                handleMessage(clientProfile.name + ' has left the chat', botProfile, null, rooms[i]);
             }
             socket.broadcast.emit('notification', new Message(clientProfile.name + ' has left the chat', clientProfile.name));
         });
@@ -161,7 +161,7 @@ chat.on('connection', (socket) => {
             // the client join the room
             socket.join(room, () => {
                 logger.log('info', clientProfile.clientID + ' has joined the chat ' + room)
-                handleMessage(clientProfile.name + ' has joined the chat', botProfile, room);
+                handleMessage(clientProfile.name + ' has joined the chat', botProfile, null, room);
                 socket.broadcast.to(room).emit('notification', new Message(clientProfile.name + ' has joined the chat', clientProfile.name));
             });
         });
@@ -170,7 +170,7 @@ chat.on('connection', (socket) => {
             let rooms = Object.keys(socket.rooms);
             if (rooms.includes(data.room)){
                 socket.leave(data.room);
-                handleMessage(clientProfile.name + ' has left the chat', botProfile, data.room);
+                handleMessage(clientProfile.name + ' has left the chat', botProfile, null, data.room);
                 socket.broadcast.emit('notification', new Message(clientProfile.name + ' has left the chat', clientProfile.name));
             }
         });

@@ -2,7 +2,7 @@
     <div class="spacing">
         <div class="pic" ng-style="{'background-image': 'url(&quot;{{message.profilePicUrl}}&quot;)' }"></div>
     </div>
-    <div class="message">{{message.text}}</div>
+    <div class="message"><img ng-if="message.imageUrl" ng-src="{{message.imageUrl}}" />{{message.text}}</div>
     <div class="name">{{message.name || 'SYSTEM'}}</div>
     <div class="time" data-time="{{message.time}}">({{message.time | date:'medium'}})</div>
 </div>

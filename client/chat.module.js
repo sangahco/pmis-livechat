@@ -53,7 +53,7 @@
                 });
             },
 
-            sendMessage: function(message, room){
+            saveMessage: function(message, room){
                 socket.emit('chat message', {
                     room: room,
                     msg: message
@@ -113,6 +113,25 @@
                 return httpRequest.request({
                     url: host + path + "/login",
                     params: { token: $routeParams.token }
+                });
+            },
+
+            // Saves a new message containing an image in Firebase.
+            // This first saves the image in Firebase storage.
+            saveImageMessage: (file, roomID) => {
+                var filePath = file.name;
+                return firebase.storage().ref(filePath).put(file).then(function(fileSnapshot) {
+                    // 3 - Generate a public URL for the file.
+                    return fileSnapshot.ref.getDownloadURL().then((url) => {
+                        // 4 - Update the chat message placeholder with the image’s URL.
+                        socket.emit('chat message', {
+                            room: roomID,
+                            msg: '',
+                            imageUrl: url
+                        });
+                    });
+                }).catch(function(error) {
+                    console.error('There was an error uploading a file to Cloud Storage:', error);
                 });
             }
 

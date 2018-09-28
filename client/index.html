@@ -54,6 +54,21 @@
     <div ng-view></div>
 
 
+<script src="https://www.gstatic.com/firebasejs/5.5.2/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBK23p7gJlKcy4qcgxr0wrxXpHKt3uj4h4",
+    authDomain: "friendlychat-41e71.firebaseapp.com",
+    databaseURL: "https://friendlychat-41e71.firebaseio.com",
+    projectId: "friendlychat-41e71",
+    storageBucket: "friendlychat-41e71.appspot.com",
+    messagingSenderId: "252271530907"
+  };
+  firebase.initializeApp(config);
+  firebase.auth().signInAnonymously();
+</script>
+
 <script src="libs/socket.io-client/socket.io.slim.js"></script>
 <script src="libs/angular/angular.min.js"></script>
 <script src="libs/angular-route/angular-route.min.js"></script>
