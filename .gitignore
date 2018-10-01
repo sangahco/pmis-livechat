@@ -4,6 +4,7 @@ build
 dist
 firebase-account-key.json
 data.json
+wwwroot
 
 # Logs
 logs
