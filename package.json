@@ -24,7 +24,7 @@
     "data-store": "^3.1.0",
     "datalist-polyfill": "^1.23.3",
     "express": "^4.17.1",
-    "firebase-admin": "^5.13.1",
+    "firebase-admin": "^11.4.1",
     "jquery": "1.11.x",
     "random-id": "0.0.2",
     "request": "^2.88.0",
