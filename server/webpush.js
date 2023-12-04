@@ -25,9 +25,12 @@ module.exports = function (app) {
   return {
     sendNotification : function (text) {
       const payload = JSON.stringify({ title: text });
-      webpush.sendNotification(subscription, payload).catch(error => {
-        console.error(error.stack);
-      });
+      if (subscription != null)
+      {
+        webpush.sendNotification(subscription, payload).catch(error => {
+          console.error(error.stack);
+        });
+      }
     }
   };
 };
