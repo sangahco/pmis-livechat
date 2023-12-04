@@ -41,7 +41,7 @@
     app.controller("AppController", ['$log', function($log){
         var $ctrl = this;
 
-        $ctrl.applicationName = 'PMIS Live Chat';
+        $ctrl.applicationName = 'Live Chat';
     }]);
 
     app.run(function ($rootScope,$timeout) {

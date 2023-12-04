@@ -64,7 +64,7 @@ main, .messages-card {
     opacity: 1;
 }
 .message-container .pic {
-    background-image: url('/images/profile_placeholder.png');
+    /* background-image: url('/images/profile_placeholder.png'); */
     background-repeat: no-repeat;
     width: 30px;
     height: 30px;
@@ -155,4 +155,14 @@ chat {height: 100%;}
 color: #fff;
 height: 200px;
 background: url('images/welcome-cover.jpg') center / cover;
+}
+
+.client-avatar {
+    /* background-image: url('/images/profile_placeholder.png'); */
+    background-repeat: no-repeat;
+    width: 20px;
+    height: 20px;
+    background-size: 20px;
+    border-radius: 20px;
+    margin-right: 10px;
 }

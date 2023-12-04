@@ -6,7 +6,7 @@ class Message {
         this.name = name;
         this.time = new Date();
         this.id = randomID(16);
-        this.profilePicUrl = profilePicUrl || 'images/user-icon.png';
+        this.profilePicUrl = profilePicUrl;
         this.imageUrl = imageUrl;
     }
 }

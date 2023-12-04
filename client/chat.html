@@ -97,7 +97,7 @@
                 <ul class="mdl-list" >
                     <li class="mdl-list__item" ng-repeat="client in $ctrl.clients">
                         <span class="mdl-list__item-primary-content">
-                        <i class="material-icons mdl-list__item-icon">person</i>
+                        <img class="client-avatar" ng-src="{{client.picurl}}" />
                         {{client.user}}
                         </span>
                     </li>

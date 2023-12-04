@@ -55,7 +55,7 @@ var storeClientProfile = function(name, profilePicUrl, socket) {
     let profile = {
         clientID: clientID,
         name: name,
-        profilePicUrl: profilePicUrl,
+        profilePicUrl: profilePicUrl || 'images/user-icon.png',
         socketID: socket.id
     };
     dataStore.set('clients.' + clientID, profile);
@@ -131,15 +131,17 @@ chat.on('connection', (socket) => {
     clientAuth.validateClient(socket.handshake.query.token)
     .then(async function(){
         const remoteProfile = await clientAuth.retrieveClientProfile(socket.handshake.query.token);
+        let clientName = remoteProfile.userName || socket.handshake.query.user || 'Guest#' + randomID(5);
         const clientProfile = storeClientProfile(
-            remoteProfile.userName || socket.handshake.query.user || 'Guest#' + randomID(5), 
-            null, socket);
+            clientName, 
+            'https://api.multiavatar.com/' + encodeURIComponent(clientName) + randomID(5) + '.png', socket);
         
         logger.log('info', clientProfile.clientID + ' connected');
         socket.clientID = clientProfile.clientID;
 
         socket.on('chat message', (data) => {
             handleMessage(data.msg, clientProfile, data.imageUrl, data.room);
+            webpush.sendNotification(clientProfile.name + ' has left a message!');
         });
 
         socket.on('disconnecting', (reason) => {
@@ -149,7 +151,8 @@ chat.on('connection', (socket) => {
             for (var i = 0; i < rooms.length; i++) {
                 handleMessage(clientProfile.name + ' has left the chat', botProfile, null, rooms[i]);
             }
-            socket.broadcast.emit('notification', new Message(clientProfile.name + ' has left the chat', clientProfile.name));
+            webpush.sendNotification(clientProfile.name + ' has left the chat');
+            //socket.broadcast.emit('notification', new Message(clientProfile.name + ' has left the chat', clientProfile.name));
         });
 
         socket.on('disconnect', () => {
@@ -162,7 +165,8 @@ chat.on('connection', (socket) => {
             socket.join(room, () => {
                 logger.log('info', clientProfile.clientID + ' has joined the chat ' + room)
                 handleMessage(clientProfile.name + ' has joined the chat', botProfile, null, room);
-                socket.broadcast.to(room).emit('notification', new Message(clientProfile.name + ' has joined the chat', clientProfile.name));
+                webpush.sendNotification(clientProfile.name + ' has joined the chat');
+                //socket.broadcast.to(room).emit('notification', new Message(clientProfile.name + ' has joined the chat', clientProfile.name));
             });
         });
 
@@ -171,7 +175,8 @@ chat.on('connection', (socket) => {
             if (rooms.includes(data.room)){
                 socket.leave(data.room);
                 handleMessage(clientProfile.name + ' has left the chat', botProfile, null, data.room);
-                socket.broadcast.emit('notification', new Message(clientProfile.name + ' has left the chat', clientProfile.name));
+                webpush.sendNotification(clientProfile.name + ' has left the chat');
+                //socket.broadcast.emit('notification', new Message(clientProfile.name + ' has left the chat', clientProfile.name));
             }
         });
 
@@ -193,6 +198,7 @@ module.exports = {
 };
 
 require('./http-routes')(app, chat);
+const webpush = require('./webpush')(app);
 
 server.listen(config.server.port, config.server.host, function(){
     logger.log('info', 'listening on ' + config.server.host + ':' + config.server.port);

@@ -1,6 +1,6 @@
 const express = require('express');
 const config = require('./config.js');
-const clientAuth = require('./client-validation')
+const clientAuth = require('./client-validation');
 //const firebaseAdmin = require('./firebase-admin');
 const livechat = require('./livechat');
 const session = require('client-sessions');
@@ -94,7 +94,8 @@ module.exports = function(app, io){
             if (Object.keys(socket.rooms).includes(req.params.room)) {
                 clients.push({
                     id: clientProfile.clientID,
-                    user: clientProfile.name
+                    user: clientProfile.name,
+                    picurl: clientProfile.profilePicUrl
                 });
             }
         }
