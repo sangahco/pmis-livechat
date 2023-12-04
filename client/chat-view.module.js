@@ -123,8 +123,7 @@
             if ($ctrl.active) {
                 findClients();
             }
-        }, 10000);
-        findClients();
+        }, 2000);
         
         $element.on('$destroy', function() {
             $interval.cancel(stopTime);
