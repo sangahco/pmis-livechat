@@ -25,7 +25,7 @@ module.exports = function (app) {
   return {
     sendNotification : function (text) {
       const payload = JSON.stringify({ title: text });
-      if (subscription != null)
+      if (subscription != null && subscription.endpoint != null)
       {
         webpush.sendNotification(subscription, payload).catch(error => {
           console.error(error.stack);
