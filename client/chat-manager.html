@@ -8,8 +8,7 @@
         <div class="mdl-layout__header-row">
             <h3><i class="material-icons chat-icon">chat_bubble_outline</i> Live Chat</h3>
             <div class="mdl-layout-spacer"></div>
-
-            <form class="mdl-layout--large-screen-only">
+            <form class="">
                 <div class="mdl-textfield mdl-js-textfield">
                     <input class="mdl-textfield__input" type="text" id="new-room-name" ng-model="$ctrl.roomName" lists="rooms">
                     <datalist id="rooms">
@@ -27,20 +26,7 @@
                 <a class="mdl-navigation__link" href="#">Nav link 3</a>
             </nav> -->
         </div>
-        <div class="mdl-layout__header-row mdl-layout--small-screen-only" >
-            <form class="">
-                <div class="mdl-textfield mdl-js-textfield">
-                    <input class="mdl-textfield__input" type="text" id="new-room-name" ng-model="$ctrl.roomName" lists="rooms">
-                    <datalist id="rooms">
-                        <option ng-repeat="room in $ctrl.rooms">{{room}}</option>
-                    </datalist>
-                    <label class="mdl-textfield__label" for="new-room-name">Join a Room...</label>
-                </div>
-                <button type="submit" ng-click="$ctrl.joinRoom($ctrl.roomName)" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
-                Join
-                </button>
-            </form>
-        </div>
+        
         <!-- Tabs -->
         <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
             <a ng-repeat="room in $ctrl.rooms" ng-click="$ctrl.activeRoom = room" target="_self" prevent-default
