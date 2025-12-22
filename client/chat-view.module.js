@@ -71,10 +71,9 @@
 
         var findClients = async () => {
             $ctrl.clients = await chatService.findClients($ctrl.roomName);
-            $log.log($ctrl.clients);
             for (let i = 0; i < $ctrl.clients.length; i++)
             {
-                $log.log($ctrl.clients[i].picurl);
+                // $log.log($ctrl.clients[i].picurl);
                 $ctrl.clients[i].picurl = $sce.trustAsHtml($ctrl.clients[i].picurl);
             }
         }
