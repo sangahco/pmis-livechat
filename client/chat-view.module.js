@@ -40,8 +40,8 @@
         }
     });
 
-    app.controller('ChatViewController', ["$log", "$element", "$scope", "$interval", "chatService",
-    function ChatViewController($log, $element, $scope, $interval, chatService) {
+    app.controller('ChatViewController', ["$log", "$element", "$scope", "$interval", "$sce", "chatService",
+    function ChatViewController($log, $element, $scope, $interval, $sce, chatService) {
         const $ctrl = this;
         const socket = chatService.socket;
 
@@ -71,6 +71,12 @@
 
         var findClients = async () => {
             $ctrl.clients = await chatService.findClients($ctrl.roomName);
+            $log.log($ctrl.clients);
+            for (let i = 0; i < $ctrl.clients.length; i++)
+            {
+                $log.log($ctrl.clients[i].picurl);
+                $ctrl.clients[i].picurl = $sce.trustAsHtml($ctrl.clients[i].picurl);
+            }
         }
 
         var loadMessages = async () => {
@@ -90,6 +96,8 @@
                     return;
                 }
             });
+            // $log.log(message.profilePicUrl);
+            message.profilePicUrl = $sce.trustAsHtml(message.profilePicUrl);
             !found && $ctrl.messages.push(message);
         }
 
@@ -119,11 +127,13 @@
             $ctrl.setUnreadCount($ctrl.roomName, $ctrl.unreadCount);
         });
         
-        var stopTime = $interval(function() {
-            if ($ctrl.active) {
-                findClients();
-            }
-        }, 2000);
+        // var stopTime = $interval(function() {
+        //     if ($ctrl.active) {
+        //         findClients();
+        //     }
+        // }, 2000);
+        
+        findClients();
         
         $element.on('$destroy', function() {
             $interval.cancel(stopTime);

@@ -1,7 +1,7 @@
 (function(){
     "use strict";
     
-    const app = angular.module("chat", ['httpRequest', 'notification']);
+    const app = angular.module("chat", ['httpRequest', 'notification', 'ngSanitize']);
     const path = location.pathname.substring(0, location.pathname.lastIndexOf('/'));
     const host = '';
 

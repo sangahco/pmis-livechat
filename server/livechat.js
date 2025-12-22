@@ -13,6 +13,7 @@ const Room = require('./room');
 const session = require('client-sessions');
 const botProfile = require('./bot-profile');
 const dataStore = new Store('dataStore', { path: 'data.json' });
+const multiavatar = require('@multiavatar/multiavatar');
 //dataStore.clear();
 
 const namespace = '/chat';
@@ -134,7 +135,8 @@ chat.on('connection', (socket) => {
         let clientName = remoteProfile.userName || socket.handshake.query.user || 'Guest#' + randomID(5);
         const clientProfile = storeClientProfile(
             clientName, 
-            'https://api.multiavatar.com/' + encodeURIComponent(clientName) + randomID(5) + '.png', socket);
+            multiavatar(encodeURIComponent(clientName) + randomID(5)),
+            socket);
         
         logger.log('info', clientProfile.clientID + ' connected');
         socket.clientID = clientProfile.clientID;

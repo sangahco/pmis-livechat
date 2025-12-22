@@ -4,6 +4,8 @@ const CSS = [
 const JS = [
     'angular/angular.min.js',
     'angular/angular.min.js.map',
+    'angular-sanitize/angular-sanitize.min.js',
+    'angular-sanitize/angular-sanitize.min.js.map',
     'angular-route/angular-route.min.js',
     'angular-route/angular-route.min.js.map',
     'jquery/dist/jquery.min.js',
