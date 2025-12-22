@@ -127,14 +127,12 @@
             $ctrl.setUnreadCount($ctrl.roomName, $ctrl.unreadCount);
         });
         
-        // var stopTime = $interval(function() {
-        //     if ($ctrl.active) {
-        //         findClients();
-        //     }
-        // }, 2000);
-        
-        findClients();
-        
+        var stopTime = $interval(function() {
+            if ($ctrl.active) {
+                findClients();
+            }
+        }, 2000);
+
         $element.on('$destroy', function() {
             $interval.cancel(stopTime);
             socket.off('chat message', chatMessageCallback);
